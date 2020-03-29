@@ -1,0 +1,49 @@
+[
+    {
+        "type":"keyword",
+        "contents":[
+            {
+                "description":"number type",
+                "string":"number"
+            }
+        ]
+    },
+    {
+        "type":"identifier",
+        "contents":[
+            {
+                "description":"constants & variables",
+                "production":["TODO"]
+            }
+        ]
+    },
+    {
+        "type":"constant",
+        "contents":[
+            {
+                "description":"true",
+                "string":"true"
+            },
+            {
+                "description":"false",
+                "string":"false"
+            },
+            {
+                "description":"constant numbers",
+                "production":["TODO"]
+            },
+            {
+                "description":"strings",
+                "production":["TODO"]
+            }
+        ]
+    },
+    {
+        "type":"operator",
+        "contents":[]
+    },
+    {
+        "type":"delimiter",
+        "contents":[]
+    }
+]
