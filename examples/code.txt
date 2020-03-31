@@ -1,0 +1,19 @@
+function max(num1, num2) 
+    if (num1 > num2) then
+        result = num1;
+    elseif (num1 < num2) then
+        result = num2;
+    else 
+        return num1, true
+    end
+
+    return result, false
+end
+
+for i = 1, 1, 10 do
+    print(i)
+    if i > 5 then
+        print(max(5,6)+10)
+        break
+    end
+end

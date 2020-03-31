@@ -6,8 +6,8 @@ if (args.l != null && args.g == null) {  // lexical analysis
         console.log("wrong args.\n  -p for production file.\n  -c for code file");
     } else {
         console.log("lexical analysis");
-        var lexical_analysis = new LA();
-        lexical_analysis.analysis(args.p, args.c);
+        var lexical_analyzer = new LA();
+        lexical_analyzer.analyze(args.p, args.c);
     }
 } else if (args.l == null && args.g != null) {  // grammatical analysis
     if (args.p == null || args.c == null) {
