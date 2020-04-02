@@ -2,12 +2,14 @@ import { match } from "assert";
 
 var fs = require("fs");
 
+// get index of required NFANode
 function findState(arrayList:Array<any>, indexStart:number, state:string ):number {
     if(state == "END_NODE") {  // the end node
         return 1;
     }
+    // search from the indexStart, because stateName could deplicate
     for(var i = indexStart; i < arrayList.length; i++) {
-        var node:LexNode = arrayList[i];
+        var node:NFANode = arrayList[i];
         if(node.stateName == state) {
             return i;
         }
@@ -15,12 +17,53 @@ function findState(arrayList:Array<any>, indexStart:number, state:string ):numbe
     return -1;
 }
 
+// get all characters in the given NFANode array
+function getCharset(typeNFA:Array<NFANode>):Set<string> {
+    var charset:Set<string> = new Set();
+    // form character set of NFA
+    for(var i in typeNFA) {
+        var node:NFANode = typeNFA[i];
+        for(var j in node.nextState) {
+            var char = node.nextState[j]["character"];
+            if(char.length == 1) {  // single character
+                charset.add(char);
+            } else {  // handle aliases
+                switch(char) {
+                    case "digit" :
+                        for(var tmp = 0; tmp < 10; tmp++) {
+                            charset.add(tmp.toString());
+                        }
+                        break;
+                    case "empty" :
+                        break;
+                    case "letter" :  // add all letters
+                        for(var tmp = 0; tmp < 26; tmp++) {
+                            charset.add(String.fromCharCode(tmp + 65));
+                            charset.add(String.fromCharCode(tmp + 65).toLowerCase());
+                        }
+                        break;
+                    case "dot":  // add all character except CR & LF
+                        for(var tmp=0; tmp < 128; tmp++) {
+                            if (tmp != 13 && tmp != 10) {  // \r \n
+                                charset.add(String.fromCharCode(tmp));
+                            }
+                        }
+                        break;
+                    default :
+                        console.error("unkown character alias:", char);
+                }
+            }
+        }
+    }
+    return charset;
+}
+
 class LexAnalyzer {
     NFA:any = {};
     DFA:any = {};
 
-    production2NFA(contents:any):Array<LexNode> {
-        var result:Array<LexNode> = [new LexNode(0, "start", "A"), new LexNode(1, "end", "END_NODE")];
+    production2NFA(contents:any):Array<NFANode> {
+        var result:Array<NFANode> = [new NFANode(0, "start", "A"), new NFANode(1, "end", "END_NODE")];
 
         for (var i in contents) {
             var content:any = contents[i];
@@ -64,7 +107,7 @@ class LexAnalyzer {
                 // add new node if needed
                 if(rightStateIndex == -1 && rightState != localStartState) {  
                     var rightStateIndex = result.length;
-                    var newNode:LexNode = new LexNode(rightStateIndex, description, rightState);
+                    var newNode:NFANode = new NFANode(rightStateIndex, description, rightState);
                     result.push(newNode);
                 } 
                 // add relation
@@ -104,13 +147,51 @@ class LexAnalyzer {
             // }
             this.NFA[typeConfig["type"]] = this.production2NFA(typeConfig["contents"]);
         }
+    }
 
+    // empty-closure of given index nodes 
+    // can handle closed loop, e.g. A-empty->B, B-empty->A, result is [A,B]
+    emptyClosure(type:string, indexes:Array<number>):Array<number> {
+        var result:Array<number> = indexes;
+        for(var i in indexes) {
+            var index:number = indexes[i];
+            var node:NFANode = this.NFA[type][index];
+            for(var j in node.nextState) {
+                if(node.nextState[j]["character"] == "empty" && 
+                indexes.indexOf(node.index) == -1) {  // remove duplicated index
+                    result.push(node.index);
+                    result = this.emptyClosure(type, result);  // recursive searching
+                }
+            }
+        }
+        return result;
+    }
 
-        // TODO
+    // move
+    move(type:string, index:number, charset:Set<string>):void {
+        var node:DFANode = this.DFA[type][index];
+        for(var char of charset) {
+            // TODO
+        }
     }
 
     NFA2DFA():void {
         // TODO
+        for(var typeName in this.NFA) {  // loop through all kinds of characters
+            var typeNFA:Array<NFANode> = this.NFA[typeName];
+            var charset:Set<string> =getCharset(typeNFA);
+            //console.log(i, charset);
+            var typeDFA:Array<DFANode> = [];
+            var startNode = new DFANode(0, "START_NODE");
+            startNode.NFAIndex = this.emptyClosure(typeName, [0]);
+            //console.log(typeName, startNode);
+
+            this.move(typeName, 0, charset);
+            // TODO
+
+            this.DFA[typeName] = typeDFA;
+        }
+
     }
 
     parseCode(codeFile:string):void {
@@ -129,8 +210,9 @@ class LexAnalyzer {
     analyze(productionFile:string, codeFile:string):void {
         this.createNFA(productionFile);
        
-        console.log("NFA:");
-        console.log(this.NFA);
+        // console.log("NFA:");
+        // console.log(this.NFA);
+
         // for (var i in this.NFA["identifier"]) {
         //     console.log(this.NFA["identifier"][i])
         // }
@@ -147,8 +229,7 @@ class LexAnalyzer {
     
 }
 
-class LexNode {
-    // TODO
+class NFANode {
     index:number;
     description:string = "";
     stateName:string = "";
@@ -158,6 +239,18 @@ class LexNode {
     this.index = ind;
     this.description = desc;
     this.stateName = state;
+    }
+}
+
+class DFANode {
+    index:number;
+    stateType:string = "";
+    NFAIndex:Array<number> = [];
+    nextState:Array<any> = [];
+
+    constructor(ind:number, stateTy:string) {
+        this.index = ind;
+        this.stateType = stateTy;
     }
 }
 
