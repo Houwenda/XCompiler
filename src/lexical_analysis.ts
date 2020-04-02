@@ -176,20 +176,18 @@ class LexAnalyzer {
     }
 
     NFA2DFA():void {
-        // TODO
         for(var typeName in this.NFA) {  // loop through all kinds of characters
             var typeNFA:Array<NFANode> = this.NFA[typeName];
             var charset:Set<string> =getCharset(typeNFA);
             //console.log(i, charset);
-            var typeDFA:Array<DFANode> = [];
+            this.DFA[typeName] = [];
             var startNode = new DFANode(0, "START_NODE");
             startNode.NFAIndex = this.emptyClosure(typeName, [0]);
+            this.DFA[typeName].push(startNode);
             //console.log(typeName, startNode);
 
             this.move(typeName, 0, charset);
             // TODO
-
-            this.DFA[typeName] = typeDFA;
         }
 
     }
