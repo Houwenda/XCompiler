@@ -17,6 +17,35 @@ function findState(arrayList:Array<any>, indexStart:number, state:string ):numbe
     return -1;
 }
 
+function unalias(aliasName:string):Set<string> {
+    var result:Set<string> = new Set();
+    switch (aliasName) {
+        case "digit":
+            for(var tmp = 0; tmp < 10; tmp++) {
+                result.add(tmp.toString());
+            }
+            break;
+        case "letter":
+            for(var tmp = 0; tmp < 26; tmp++) {
+                result.add(String.fromCharCode(tmp + 65));
+                result.add(String.fromCharCode(tmp + 65).toLowerCase());
+            }
+            break;
+        case "dot":
+            for(var tmp=0; tmp < 128; tmp++) {
+                if (tmp != 13 && tmp != 10) {  // \r \n
+                    result.add(String.fromCharCode(tmp));
+                }
+            }
+            break;
+        case "empty":
+            break;
+        default:
+            console.error("unkown character alias:", aliasName);
+    }
+    return result;
+}
+
 // get all characters in the given NFANode array
 function getCharset(typeNFA:Array<NFANode>):Set<string> {
     var charset:Set<string> = new Set();
@@ -28,29 +57,8 @@ function getCharset(typeNFA:Array<NFANode>):Set<string> {
             if(char.length == 1) {  // single character
                 charset.add(char);
             } else {  // handle aliases
-                switch(char) {
-                    case "digit" :
-                        for(var tmp = 0; tmp < 10; tmp++) {
-                            charset.add(tmp.toString());
-                        }
-                        break;
-                    case "empty" :
-                        break;
-                    case "letter" :  // add all letters
-                        for(var tmp = 0; tmp < 26; tmp++) {
-                            charset.add(String.fromCharCode(tmp + 65));
-                            charset.add(String.fromCharCode(tmp + 65).toLowerCase());
-                        }
-                        break;
-                    case "dot":  // add all character except CR & LF
-                        for(var tmp=0; tmp < 128; tmp++) {
-                            if (tmp != 13 && tmp != 10) {  // \r \n
-                                charset.add(String.fromCharCode(tmp));
-                            }
-                        }
-                        break;
-                    default :
-                        console.error("unkown character alias:", char);
+                for (var tmp of unalias(char)) {
+                    charset.add(tmp);
                 }
             }
         }
@@ -167,12 +175,35 @@ class LexAnalyzer {
         return result;
     }
 
-    // move
-    move(type:string, index:number, charset:Set<string>):void {
-        var node:DFANode = this.DFA[type][index];
-        for(var char of charset) {
+    // move by given charset
+    moveByCharset(type:string, index:number, charset:Set<string>):void {
+        var dfaNode:DFANode = this.DFA[type][index];
+
+        for (var char of charset) {
+            // get nfa states that can be reached by given a character
+            var moveStates:Set<number> = new Set();
+            for (var i in dfaNode.NFAIndex) {
+                var nfaNode:NFANode = this.NFA[dfaNode.NFAIndex[i]];
+                for(var j in nfaNode.nextState) {
+                    var nfaNextState = nfaNode.nextState[j];
+                    if(nfaNextState["character"].length == 1) {  // single character
+                        if(nfaNextState["character"] == char) {
+                            moveStates.add(nfaNextState["index"]);
+                        }
+                    } else {  // aliases
+                        var usableCharset = unalias(nfaNextState["character"]);
+                        if(usableCharset.has(char)) {
+                            moveStates.add(nfaNextState["index"]);
+                        }
+                    }
+                }
+            }
+
+            // whether to create new DFA node, or just add a link
             // TODO
+
         }
+        
     }
 
     NFA2DFA():void {
@@ -186,7 +217,7 @@ class LexAnalyzer {
             this.DFA[typeName].push(startNode);
             //console.log(typeName, startNode);
 
-            this.move(typeName, 0, charset);
+            this.moveByCharset(typeName, 0, charset);
             // TODO
         }
 
