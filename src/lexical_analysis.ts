@@ -33,7 +33,7 @@ function unalias(aliasName:string):Set<string> {
             break;
         case "dot":
             for(var tmp=0; tmp < 128; tmp++) {
-                if (tmp != 13 && tmp != 10) {  // \r \n
+                if (tmp != 13 && tmp != 10 && tmp != 34) {  // \r \n "
                     result.add(String.fromCharCode(tmp));
                 }
             }
@@ -157,18 +157,36 @@ class LexAnalyzer {
         }
     }
 
+    // get empty closure states from an entry node recursively
+    emptyNext(type:string, index:number):Array<number> {
+        var result:Set<number> = new Set();
+        var nfaNode:NFANode = this.NFA[type][index];
+        for(var i in nfaNode.nextState) {
+            if(nfaNode.nextState[i]["character"] == "empty") {
+                result.add(nfaNode.nextState[i]["index"]);
+                var nextResult:Array<number> = this.emptyNext(type, nfaNode.nextState[i]["index"]);  // recursive search
+                for(var j in nextResult) {
+                    result.add(nextResult[j]);
+                }
+            }
+        }
+        var resultArray:Array<number> = [];
+        for(var tmp of result) {
+            resultArray.push(tmp)
+        }
+        return resultArray;
+    }
+
     // empty-closure of given index nodes 
     // can handle closed loop, e.g. A-empty->B, B-empty->A, result is [A,B]
     emptyClosure(type:string, indexes:Array<number>):Array<number> {
         var result:Array<number> = indexes;
         for(var i in indexes) {
             var index:number = indexes[i];
-            var node:NFANode = this.NFA[type][index];
-            for(var j in node.nextState) {
-                if(node.nextState[j]["character"] == "empty" && 
-                indexes.indexOf(node.index) == -1) {  // remove duplicated index
-                    result.push(node.index);
-                    result = this.emptyClosure(type, result);  // recursive searching
+            var tmpResult:Array<number> = this.emptyNext(type, index);
+            for(var tmp of tmpResult) {
+                if(result.indexOf(tmp) == -1) {  // remove duplicate
+                    result.push(tmp);
                 }
             }
         }
@@ -181,27 +199,61 @@ class LexAnalyzer {
 
         for (var char of charset) {
             // get nfa states that can be reached by given a character
-            var moveStates:Set<number> = new Set();
+            var moveNfaStates:Set<number> = new Set();
             for (var i in dfaNode.NFAIndex) {
-                var nfaNode:NFANode = this.NFA[dfaNode.NFAIndex[i]];
+                var nfaNode:NFANode = this.NFA[type][dfaNode.NFAIndex[i]];
                 for(var j in nfaNode.nextState) {
                     var nfaNextState = nfaNode.nextState[j];
                     if(nfaNextState["character"].length == 1) {  // single character
                         if(nfaNextState["character"] == char) {
-                            moveStates.add(nfaNextState["index"]);
+                            moveNfaStates.add(nfaNextState["index"]);
                         }
                     } else {  // aliases
                         var usableCharset = unalias(nfaNextState["character"]);
                         if(usableCharset.has(char)) {
-                            moveStates.add(nfaNextState["index"]);
+                            moveNfaStates.add(nfaNextState["index"]);
                         }
                     }
                 }
             }
 
             // whether to create new DFA node, or just add a link
-            // TODO
-
+            var moveStatesArray:Array<number> = [];  // set to array
+            for(var tmpState of moveNfaStates) {
+                moveStatesArray.push(tmpState);
+            }
+            moveStatesArray = this.emptyClosure(type, moveStatesArray);  // empty closure
+            var isNew:boolean = true;
+            for(var i in this.DFA[type]) {
+                var tmpDfaNode:DFANode = this.DFA[type][i];
+                if(tmpDfaNode.NFAIndex.sort().toString() == 
+                        moveStatesArray.sort().toString()) {  // already have this DFA node
+                    isNew = false;
+                    // add link
+                    this.DFA[type][index].nextState.push({
+                        "character":char,
+                        "index":i
+                    });
+                    break;
+                }
+            }
+            if(isNew && moveStatesArray.length != 0) {  // need to create new DFA node & add link & recursively move()
+                // add new node
+                var newNodeIndex:number = this.DFA[type].length;
+                if(moveStatesArray.indexOf(1) == -1) {  // does not contain END_NODE of NFA
+                    var newNode:DFANode = new DFANode(newNodeIndex, "NORMAL");
+                } else {  // contains END_NODE of NFA
+                    var newNode:DFANode = new DFANode(newNodeIndex, "END_NODE");
+                }
+                newNode.NFAIndex = moveStatesArray;
+                this.DFA[type].push(newNode);
+                // add link
+                this.DFA[type][index].nextState.push({
+                    "character":char,
+                    "index":newNodeIndex
+                });
+                this.moveByCharset(type, newNodeIndex, charset);  // recusive move
+            }
         }
         
     }
@@ -216,9 +268,8 @@ class LexAnalyzer {
             startNode.NFAIndex = this.emptyClosure(typeName, [0]);
             this.DFA[typeName].push(startNode);
             //console.log(typeName, startNode);
-
-            this.moveByCharset(typeName, 0, charset);
-            // TODO
+    
+            this.moveByCharset(typeName, 0, charset);            
         }
 
     }
@@ -242,8 +293,8 @@ class LexAnalyzer {
         // console.log("NFA:");
         // console.log(this.NFA);
 
-        // for (var i in this.NFA["identifier"]) {
-        //     console.log(this.NFA["identifier"][i])
+        // for (var i in this.NFA["constant"]) {
+        //     console.log(this.NFA["constant"][i])
         // }
         // console.log(this.NFA["operator"]); PASS
         // console.log(this.NFA["keyword"]); PASS
@@ -252,7 +303,18 @@ class LexAnalyzer {
         // console.log(this.NFA["identifier"]); PASS
 
         this.NFA2DFA();
-        //console.log("DFA:", this.DFA);
+        // console.log("DFA:");
+        //console.log(this.DFA);
+        // for (var i in this.DFA["constant"]) {
+        //     console.log(this.DFA["constant"][i])
+        //     console.log(this.DFA["constant"][i].nextState.length)
+        // }
+        // console.log(this.DFA["identifier"]); PASS
+        // console.log(this.DFA["operator"]); PASS
+        // console.log(this.DFA["delimiter"]); PASS
+        // console.log(this.DFA["keyword"]); PASS
+        // console.log(this.DFA["constant"]); PASS
+
         this.parseCode(codeFile);
     }
     
