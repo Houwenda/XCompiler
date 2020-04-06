@@ -62,22 +62,21 @@ function getCharset(typeNFA:Array<NFANode>):Set<string> {
     return charset;
 }
 
-// remove spaces at the head of code string 
-function removeHeadSpaces(codeString:string):string {
+// remove spaces at the head of code string
+function removeHeadSpace(code:string):string {
     var i:number;
-    for(i = 0; i < codeString.length; i++) {
-        if(codeString[i] != " ") {
+    for(i = 0; i < code.length; i++) {
+        if(code[i] != " ") {
             break;
         }
     }
-    codeString = codeString.substr(i);
-    return codeString;
+    return code.substr(i);
 }
 
 module.exports = {
     findState:findState,
     unalias:unalias,
     getCharset:getCharset,
-    removeHeadSpaces:removeHeadSpaces
+    removeHeadSpace:removeHeadSpace
 }
 

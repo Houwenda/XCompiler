@@ -1,4 +1,3 @@
-
 const args:any = require("minimist")(process.argv.slice(2));
 
 if (args.l != null && args.g == null) {  // lexical analysis

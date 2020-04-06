@@ -1,11 +1,11 @@
 import { match } from "assert";
 
-var fs = require("fs");
-var NFANode = require("./NodeClass").NFANode;
-var DFANode = require("./NodeClass").DFANode;
-var findState = require("./functions").findState;
-var unalias = require("./functions").unalias;
-var getCharset = require("./functions").getCharset;
+const fs = require("fs");
+const NFANode = require("./Node").NFANode;
+const DFANode = require("./Node").DFANode;
+const findState = require("./functions").findState;
+const unalias = require("./functions").unalias;
+const getCharset = require("./functions").getCharset;
 
 class LexAnalyzer {
     NFA:any = {};
@@ -235,9 +235,9 @@ class LexAnalyzer {
         console.log("NFA -> DFA");
         // console.log("DFA:");
         //console.log(this.DFA);
-        // for (var i in this.DFA["constant"]) {
-        //     console.log(this.DFA["constant"][i])
-        //     console.log(this.DFA["constant"][i].nextState.length)
+        // for (var i in this.DFA["delimiter"]) {
+        //     console.log(this.DFA["delimiter"][i])
+        //     console.log(this.DFA["delimiter"][i].nextState.length)
         // }
         // console.log(this.DFA["identifier"]); PASS
         // console.log(this.DFA["operator"]); PASS
