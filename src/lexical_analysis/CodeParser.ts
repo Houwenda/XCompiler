@@ -60,14 +60,14 @@ class CodeParser {
         var dfaNodes:Array<DFANode> = this.DFA[typeName];
         var result:any = this.matchNode(typeName, 0, 0);
         if(result.matched) {
-            if(result.token == "\n") {  // LF
-                this.lineCount++;
-            }
             this.TokenStream.push({
                 "line":this.lineCount,
                 "type":typeName,
                 "token":result.token
             });
+            if(result.token == "\n") {  // LF
+                this.lineCount++;
+            }
             return true;
         }
         return false;
@@ -82,7 +82,7 @@ class CodeParser {
         }
         this.TokenStream = [];
         this.restCode = this.codeString.trim();
-        this.lineCount = 0;
+        this.lineCount = 1;
 
         while(this.restCode.length > 0) {
             // should match in order: 
