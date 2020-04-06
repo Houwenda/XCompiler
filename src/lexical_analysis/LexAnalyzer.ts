@@ -1,70 +1,11 @@
 import { match } from "assert";
 
 var fs = require("fs");
-
-// get index of required NFANode
-function findState(arrayList:Array<any>, indexStart:number, state:string ):number {
-    if(state == "END_NODE") {  // the end node
-        return 1;
-    }
-    // search from the indexStart, because stateName could deplicate
-    for(var i = indexStart; i < arrayList.length; i++) {
-        var node:NFANode = arrayList[i];
-        if(node.stateName == state) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-function unalias(aliasName:string):Set<string> {
-    var result:Set<string> = new Set();
-    switch (aliasName) {
-        case "digit":
-            for(var tmp = 0; tmp < 10; tmp++) {
-                result.add(tmp.toString());
-            }
-            break;
-        case "letter":
-            for(var tmp = 0; tmp < 26; tmp++) {
-                result.add(String.fromCharCode(tmp + 65));
-                result.add(String.fromCharCode(tmp + 65).toLowerCase());
-            }
-            break;
-        case "dot":
-            for(var tmp=0; tmp < 128; tmp++) {
-                if (tmp != 13 && tmp != 10 && tmp != 34) {  // \r \n "
-                    result.add(String.fromCharCode(tmp));
-                }
-            }
-            break;
-        case "empty":
-            break;
-        default:
-            console.error("unkown character alias:", aliasName);
-    }
-    return result;
-}
-
-// get all characters in the given NFANode array
-function getCharset(typeNFA:Array<NFANode>):Set<string> {
-    var charset:Set<string> = new Set();
-    // form character set of NFA
-    for(var i in typeNFA) {
-        var node:NFANode = typeNFA[i];
-        for(var j in node.nextState) {
-            var char = node.nextState[j]["character"];
-            if(char.length == 1) {  // single character
-                charset.add(char);
-            } else {  // handle aliases
-                for (var tmp of unalias(char)) {
-                    charset.add(tmp);
-                }
-            }
-        }
-    }
-    return charset;
-}
+var NFANode = require("./NodeClass").NFANode;
+var DFANode = require("./NodeClass").DFANode;
+var findState = require("./functions").findState;
+var unalias = require("./functions").unalias;
+var getCharset = require("./functions").getCharset;
 
 class LexAnalyzer {
     NFA:any = {};
@@ -273,23 +214,11 @@ class LexAnalyzer {
         }
 
     }
-
-    parseCode(codeFile:string):void {
-        var codes:any;
-        try {
-            codes = fs.readFileSync(codeFile);
-        } catch(e) {
-            console.log("code file read error");
-            console.log(e);
-        }
-
-        //console.log(codes);
-        // TODO
-    }
     
     analyze(productionFile:string, codeFile:string):void {
         this.createNFA(productionFile);
-       
+        console.log("production -> NFA");
+
         // console.log("NFA:");
         // console.log(this.NFA);
 
@@ -303,6 +232,7 @@ class LexAnalyzer {
         // console.log(this.NFA["identifier"]); PASS
 
         this.NFA2DFA();
+        console.log("NFA -> DFA");
         // console.log("DFA:");
         //console.log(this.DFA);
         // for (var i in this.DFA["constant"]) {
@@ -315,33 +245,7 @@ class LexAnalyzer {
         // console.log(this.DFA["keyword"]); PASS
         // console.log(this.DFA["constant"]); PASS
 
-        this.parseCode(codeFile);
-    }
-    
-}
-
-class NFANode {
-    index:number;
-    description:string = "";
-    stateName:string = "";
-    nextState:Array<any> = [];
-
-    constructor(ind:number, desc:string, state:string){
-    this.index = ind;
-    this.description = desc;
-    this.stateName = state;
-    }
-}
-
-class DFANode {
-    index:number;
-    stateType:string = "";
-    NFAIndex:Array<number> = [];
-    nextState:Array<any> = [];
-
-    constructor(ind:number, stateTy:string) {
-        this.index = ind;
-        this.stateType = stateTy;
+        console.log("analysis succeeds");
     }
 }
 
