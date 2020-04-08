@@ -27,9 +27,16 @@ function unalias(aliasName:string):Set<string> {
                 result.add(String.fromCharCode(tmp + 65).toLowerCase());
             }
             break;
-        case "dot":
+        case "dot1":
             for(var tmp=0; tmp < 128; tmp++) {
                 if (tmp != 13 && tmp != 10 && tmp != 34) {  // \r \n "
+                    result.add(String.fromCharCode(tmp));
+                }
+            }
+            break;
+        case "dot2":
+            for(var tmp=0; tmp < 128; tmp++) {
+                if (tmp != 13 && tmp != 10 && tmp != 39) {  // \r \n "
                     result.add(String.fromCharCode(tmp));
                 }
             }

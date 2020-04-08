@@ -4,7 +4,7 @@ var keywords:Array<string> = [
     "local",  // scope
     "true","false",  // boolean value
     "nil","number","function",  // basic data types
-    "print","type","return"  // builtins
+    "return"  // other
 ]
 
 var operators:Array<string> = [

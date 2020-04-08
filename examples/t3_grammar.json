@@ -50,12 +50,6 @@
             "description": "function",
             "production": ["A-><f>B", "B-><u>C", "C-><n>D", "D-><c>E", "E-><t>F", "F-><i>G", "G-><o>H", "H-><n>"]
         }, {
-            "description": "print",
-            "production": ["A-><p>B", "B-><r>C", "C-><i>D", "D-><n>E", "E-><t>"]
-        }, {
-            "description": "type",
-            "production": ["A-><t>B", "B-><y>C", "C-><p>D", "D-><e>"]
-        }, {
             "description": "return",
             "production": ["A-><r>B", "B-><e>C", "C-><t>D", "D-><u>E", "E-><r>F", "F-><n>"]
         }]
@@ -134,8 +128,11 @@
                 "description":"strings",
                 "production":[
                     "A-><\">B",
-                    "B-><dot>B",
-                    "B-><\">"
+                    "B-><dot1>B",
+                    "B-><\">",
+                    "A-><'>C",
+                    "C-><dot2>C",
+                    "C-><'>"
                 ]
             }
         ]
