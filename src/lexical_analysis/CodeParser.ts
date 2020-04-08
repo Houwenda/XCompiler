@@ -109,8 +109,8 @@ class CodeParser {
 
             this.restCode = rmHeadSpace(this.restCode);
         }
-        console.log(this.TokenStream);
-        // TODO
+        // console.log(this.TokenStream);
+        console.log("parsing succeeds");
     }
 }
 

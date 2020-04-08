@@ -52,6 +52,9 @@
         }, {
             "description": "return",
             "production": ["A-><r>B", "B-><e>C", "C-><t>D", "D-><u>E", "E-><r>F", "F-><n>"]
+        }, {
+            "description":"require",
+            "production":["A-><r>B","B-><e>C","C-><q>D","D-><u>E","E-><i>F","F-><r>G","G-><e>"]
         }]
     },
     {
@@ -230,6 +233,9 @@
         }, {
             "description": "\n",
             "production": ["A-><\n>"]
+        }, {
+            "description":".",
+            "production":["A-><.>"]
         }]
     }
 ]

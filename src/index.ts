@@ -12,6 +12,11 @@ if (args.l != null && args.s == null) {  // lexical analysis
         console.log("code parsing starts")
         var codeParser  = new CP(lexicalAnalyzer.DFA);
         codeParser.parse(args.c);
+
+        // output
+        for(var i in codeParser.TokenStream) {
+            console.log(codeParser.TokenStream[i]);
+        }
     }
 } else if (args.l == null && args.s != null) {  // syntax analysis
     if (args.p == null || args.c == null) {

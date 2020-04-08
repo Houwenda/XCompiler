@@ -4,7 +4,7 @@ var keywords:Array<string> = [
     "local",  // scope
     "true","false",  // boolean value
     "nil","number","function",  // basic data types
-    "return"  // other
+    "return", "require"  // other
 ]
 
 var operators:Array<string> = [
@@ -13,7 +13,7 @@ var operators:Array<string> = [
     "==","!=",">","<",">=","<=",  // comparation
 ]
 
-var delimiters:Array<string> = ["{","}","[","]","(",")",",","\n"]
+var delimiters:Array<string> = ["{", "}", "[", "]", "(", ")", ",", "\n", "."]
 
 function format2string(list:Array<string>):void {
     var results:Array<any> = [];

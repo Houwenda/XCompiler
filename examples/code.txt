@@ -1,4 +1,8 @@
-function max(num1, num2)
+require "test"
+
+test_module = {}
+
+function test_module.max(num1, num2)
     if (num1 > num2) then
         result = num1
     elseif (num1 < num2) then
@@ -13,8 +17,11 @@ end
 for i = 1, 1, 1.5E+1 do
     print(i)
     if i > 5 then
+        test.test()
         print("max 'number' :\n")
         print(max(5,6)+10)
         break
     end
 end
+
+return test_module
