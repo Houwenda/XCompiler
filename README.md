@@ -50,12 +50,13 @@ Using LR(1) method.
 
 Args:
 - -s syntax analysis
-- -p productions file
+- --pl lexical productions file
+- --ps syntax productions file
 - -c code file
 
 example
 ```shell
 tsc --build src/tsconfig.json
 cd src/build
-node index.js -s -p ../../examples/t2_grammar.json -c ../../examples/code.txt
+node index.js -s --pl ../../examples/t3_grammar.json --ps ../../examples/t2_grammar.json -c ../../examples/code.txt
 ```

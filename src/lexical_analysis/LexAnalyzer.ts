@@ -215,7 +215,7 @@ class LexAnalyzer {
 
     }
     
-    analyze(productionFile:string, codeFile:string):void {
+    analyze(productionFile:string):void {
         this.createNFA(productionFile);
         console.log("production -> NFA");
 
