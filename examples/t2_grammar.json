@@ -1,0 +1,10 @@
+[
+    {
+        "description":"code starts",
+        "production":"CODE->FUNCTION"
+    },
+    {
+        "description":"code starts",
+        "production":"FUNCTION-><local> function <identifier> ( )"
+    },
+]

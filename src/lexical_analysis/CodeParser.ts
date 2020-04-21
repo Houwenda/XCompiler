@@ -57,7 +57,6 @@ class CodeParser {
     }
 
     matchType(typeName:string):boolean {
-        var dfaNodes:Array<DFANode> = this.DFA[typeName];
         var result:any = this.matchNode(typeName, 0, 0);
         if(result.matched) {
             this.TokenStream.push({
@@ -81,9 +80,19 @@ class CodeParser {
             console.log(e);
         }
         this.TokenStream = [];
-        this.restCode = this.codeString.trim();
         this.lineCount = 1;
-
+        //this.restCode = this.codeString.trim();
+        // handle head spaces and LFs
+        this.restCode = this.codeString;
+        while(this.restCode[0] == " " || this.restCode[0] == "\n") {
+            if(this.restCode[0] == "\n") {
+                this.lineCount++;
+                this.restCode = this.restCode.substr(1);
+            } else {
+                this.restCode = rmHeadSpace(this.restCode);
+            }
+        }
+        
         while(this.restCode.length > 0) {
             // should match in order: 
             // keyword -> constant -> identifier -> operator -> delimiter
@@ -107,7 +116,15 @@ class CodeParser {
                 break;
             }
 
-            this.restCode = rmHeadSpace(this.restCode);
+            //this.restCode = rmHeadSpace(this.restCode);
+            while(this.restCode[0] == " " || this.restCode[0] == "\n") {
+                if(this.restCode[0] == "\n") {
+                    this.lineCount++;
+                    this.restCode = this.restCode.substr(1);
+                } else {
+                    this.restCode = rmHeadSpace(this.restCode);
+                }
+            }
         }
         console.log("parsing succeeds");
     }

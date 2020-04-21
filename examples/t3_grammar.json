@@ -231,9 +231,6 @@
             "description": ",",
             "production": ["A-><,>"]
         }, {
-            "description": "\n",
-            "production": ["A-><\n>"]
-        }, {
             "description":".",
             "production":["A-><.>"]
         }]
