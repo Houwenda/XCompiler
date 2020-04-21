@@ -2,6 +2,50 @@
 
 2型文法，用于语法分析。
 
+
+### 表示
+<大写单词>表示中间状态
+<小写单词>表示此法分析类型或别名
+其他单词/符号由空格隔开
+
+中间状态对照表：
+|   状态   |   描述   |
+| --- | --- |
+| `<CODE>` | 代码 |
+|`<FUNCTION_DEFINITION>`|函数定义|
+|`<ARGS_STATEMENT>`|参数声明|
+|`<FUNCTION_BLOCK>`|函数块|
+|`<STATEMENT>`|声明|
+|`<STATEMENT_CLOSURE>`|声明闭包|
+|`<FUNCTION_BLOCK_CLOSURE>`|函数块闭包|
+|`<ASSIGNTMENT_FUNCTION>`|赋值函数|
+|`<FOR_LOOP>`|for循环|
+|`<WHILE_LOOP>`|while循环|
+|`<BRANCH_SENTENCE>`|分支语句|
+|`<FUNCTION_RETURN>`|函数返回|
+|`<ASSIGNMENT_OR_FUNCTION_CALL>`|赋值或函数调用|
+|`<RIGHT_VALUE>`|右值|
+|`<ARGS_LIST>`|参数列表|
+|`<ARG>`|参数|
+|`<ARG_CLOSURE>`|参数闭包|
+|`<EXPRESSION>`|表达式|
+|`<MULTIPULE_DATA>`|多个数据|
+|`<FACTOR>`|因子|
+|`<TERM>`|项|
+|`<FACTOR_FORMULA>`|因式|
+|`<FACTOR_FORMULA_RECURSION>`|因式递归|
+|`<CONSTANT_CLOSURE>`|常量闭包|
+|`<LOGICAL_EXPRESSION>`|逻辑表达式|
+|`<LOGICAL_OPERATOR>`|逻辑运算符|
+|`<ELSE_SENTENCE>`|分支转移|
+
+类型或别名对照表：
+|  别名   |  描述  |
+| --- | --- |
+|`<constant>`|常量|
+|`<identifier>`|标识符|
+|`<empty>`|空|
+
 ## t3_grammar.json
 
 3型右递归文法，用于词法分析。
@@ -199,8 +243,20 @@ DFA中没有正则里的贪婪和懒惰匹配模式问题，因此这里的<dot1
 
 状态这里用单个大写字母表示，实际上支持字符串，除END_NODE外（为保留状态）
 
+别名对照表：
+
+| 别名 | 描述 |
+| ---- | ---- |
+| `<digit>` |   数字   |
+| `<empty>` |   空   |
+| `<letter>` |   字母（含大小写）   |
+| `<dot1>` |   除LF、LR、双引号外其他字符   |
+| `<dot2>` |   除LF、LR、单引号外其他字符   |
+
+
+
 ## code.txt
 
 示例代码，作为词法分析器的输入。
 
-测试用例使用类似Lua语法。
+测试用例使用类似Lua和C++语法。
