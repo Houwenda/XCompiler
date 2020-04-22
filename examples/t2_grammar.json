@@ -60,7 +60,7 @@
             },
             {
                 "left":"<FUNCTION_BLOCK_CLOSURE>",
-                "right":"<ASSIGNTMENT_FUNCTION> <FUNCTION_BLOCK_CLOSURE>"
+                "right":"<ASSIGNMENT_FUNCTION> <FUNCTION_BLOCK_CLOSURE>"
             },
             {
                 "left":"<FUNCTION_BLOCK_CLOSURE>",
@@ -84,7 +84,7 @@
             },
             {
                 "left":"<ASSIGNMENT_FUNCTION>",
-                "right":"<identifier> <ASSIGNTMENT_OR_FUNCTION_CALL>"
+                "right":"<identifier> <ASSIGNMENT_OR_FUNCTION_CALL>"
             }
         ]
     },
@@ -170,7 +170,7 @@
             },
             {
                 "left":"<FACTOR>",
-                "right":"<FACTOR_FORMULA><FACTOR_FORMULA_RECURSION>"
+                "right":"<FACTOR_FORMULA> <FACTOR_FORMULA_RECURSION>"
             },
             {
                 "left":"<FACTOR_FORMULA>",
@@ -213,7 +213,7 @@
         "description":"multiple data",
         "contents":[
             {
-                "left":"<MULTIPLE_DATA>",
+                "left":"<MULTIPULE_DATA>",
                 "right":"<constant> <CONSTANT_CLOSURE>"
             },
             {

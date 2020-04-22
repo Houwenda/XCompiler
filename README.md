@@ -58,5 +58,5 @@ example
 ```shell
 tsc --build src/tsconfig.json
 cd src/build
-node index.js -s --pl ../../examples/t3_grammar.json --ps ../../examples/t2_grammar.json -c ../../examples/code.txt
+node --max-old-space-size=2000 index.js -s --pl ../../examples/t3_grammar.json --ps ../../examples/t2_grammar.json -c ../../examples/code.txt > debug.txt
 ```
