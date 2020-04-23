@@ -1,0 +1,29 @@
+[
+    {
+        "description":"test",
+        "contents":[
+            {
+                "left":"<CODE>",
+                "right":"<B> <B>"
+            }
+        ]
+    },
+    {
+        "description":"test",
+        "contents":[
+            {
+                "left":"<B>",
+                "right":"a <B>"
+            }
+        ]
+    },
+    {
+        "description":"test",
+        "contents":[
+            {
+                "left":"<B>",
+                "right":"b"
+            }
+        ]
+    }
+]

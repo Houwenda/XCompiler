@@ -1,0 +1,47 @@
+[
+    {
+        "description":"test",
+        "contents":[
+            {
+                "left":"<CODE>",
+                "right":"a <A> d"
+            }
+        ]
+    },
+    {
+        "description":"test",
+        "contents":[
+            {
+                "left":"<CODE>",
+                "right":"b <A> c"
+            }
+        ]
+    },
+    {
+        "description":"test",
+        "contents":[
+            {
+                "left":"<CODE>",
+                "right":"a e c"
+            }
+        ]
+    },
+    {
+        "description":"test",
+        "contents":[
+            {
+                "left":"<CODE>",
+                "right":"b e d"
+            }
+        ]
+    },
+    {
+        "description":"test",
+        "contents":[
+            {
+                "left":"<A>",
+                "right":"e"
+            }
+        ]
+    }
+]
