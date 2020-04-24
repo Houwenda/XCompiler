@@ -1,0 +1,5 @@
+function main(a, b)
+    print(a)
+
+    return
+end

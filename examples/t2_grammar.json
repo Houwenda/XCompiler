@@ -200,11 +200,11 @@
             },
             {
                 "left": "<FACTOR_FORMULA_RECURSION>",
-                "right": "* <FACTOR_FORMULA> <FACTOR_FORMULA_RECURSION"
+                "right": "* <FACTOR_FORMULA> <FACTOR_FORMULA_RECURSION>"
             },
             {
                 "left": "<FACTOR_FORMULA_RECURSION>",
-                "right": "/ <FACTOR_FORMULA> <FACTOR_FORMULA_RECURSION"
+                "right": "/ <FACTOR_FORMULA> <FACTOR_FORMULA_RECURSION>"
             },
             {
                 "left": "<FACTOR_FORMULA_RECURSION>",

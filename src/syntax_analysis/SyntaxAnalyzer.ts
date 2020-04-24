@@ -63,6 +63,10 @@ class SyntaxAnalyzer {
             return this.FIRST[stateName];
         }
 
+        if (tokenType(stateName) != "state") {  // not state, but common tokens
+            return new Set(stateName);
+        }
+
         // not calculated yet
         var result: Set<string> = new Set();
         for (var i: number = 0; i < this.promotedProductions.length; i++) {
@@ -75,11 +79,12 @@ class SyntaxAnalyzer {
                         result.add(tmp);
                     }
                 } else {  // common or alias, final
-                    if(this.promotedProductions[i]["right"].length > 0) {  // <empty> removed, right side can be empty
+                    if (this.promotedProductions[i]["right"].length > 0) {  // <empty> removed, right side can be empty
                         result.add(this.promotedProductions[i]["right"][0]);
-                    } else {
-                        result.add("");  // if right side is empty, <empty> belongs to FIRST set
-                    }
+                    } //else {
+                        //result.add("");  // if right side is empty, <empty> belongs to FIRST set
+                    //}
+
                 }
             }
         }
@@ -109,7 +114,11 @@ class SyntaxAnalyzer {
                 var searchSymbol: Set<string> = new Set();
                 if (dotPosition < productionRight.length - 1) {  // has more than 1 token behind dot, e.g. S->.Sa, S->.SA
                     if (tokenType(productionRight[dotPosition + 1]) == "state") {  // not final
-                        searchSymbol = this.firstVT(productionRight[dotPosition + 1]);
+                        var searchIndex:number = 1;
+                        while(searchSymbol.size == 0 && dotPosition + searchIndex < productionRight.length) {
+                            searchSymbol = this.firstVT(productionRight[dotPosition + searchIndex]);
+                            searchIndex++;
+                        }
                     } else {  // common or alias, final
                         searchSymbol.add(productionRight[dotPosition + 1]);
                     }
@@ -437,12 +446,12 @@ class SyntaxAnalyzer {
     }
 
     // create ACTION table & GOTO table
-    createTables():void {
-        for(var i:number = 0; i < this.DFA.length; i++) {
-            var dfaNode:LR1DFANode = this.DFA[i];
+    createTables(): void {
+        for (var i: number = 0; i < this.DFA.length; i++) {
+            var dfaNode: LR1DFANode = this.DFA[i];
             // create Si & GOTO by nextStates
-            for(var nextState of dfaNode.nextState) {
-                if(tokenType(nextState["character"]) == "state") {  // not final
+            for (var nextState of dfaNode.nextState) {
+                if (tokenType(nextState["character"]) == "state") {  // not final
                     // add to GOTO table
                     this.GOTO.push({
                         "index": i,
@@ -455,27 +464,27 @@ class SyntaxAnalyzer {
                         "index": i,
                         "character": nextState["character"],
                         "content-type": "S",
-                        "content":nextState["index"]
+                        "content": nextState["index"]
                     });
                 }
             }
 
             // add ri & acc to ACTION using productions
-            for(var j:number = 0; j < dfaNode.productionIndex.length; j++) {
-                var productionIndex:number = dfaNode.productionIndex[j];
-                var tmpProduction:any = this.promotedProductions[productionIndex];
-                if(dfaNode.position[j] == tmpProduction["right"].length) {  // dot is at the end
+            for (var j: number = 0; j < dfaNode.productionIndex.length; j++) {
+                var productionIndex: number = dfaNode.productionIndex[j];
+                var tmpProduction: any = this.promotedProductions[productionIndex];
+                if (dfaNode.position[j] == tmpProduction["right"].length) {  // dot is at the end
                     // acc
-                    if(tmpProduction["left"] == "<S'>" && tmpProduction["right"][0] == "<CODE>" &&
-                    dfaNode.searchSymbol[j].length == 0) {
+                    if (tmpProduction["left"] == "<S'>" && tmpProduction["right"][0] == "<CODE>" &&
+                        dfaNode.searchSymbol[j].length == 0) {
                         this.ACTION.push({
                             "index": i,
                             "character": "<HASH>",  // '<HASH>' for '#'
                             "content-type": "acc",
-                            "content":"acc"
+                            "content": "acc"
                         });
                     } else {  // ri
-                        if(dfaNode.searchSymbol[j].length == 0) {  // empty search symbol list
+                        if (dfaNode.searchSymbol[j].length == 0) {  // empty search symbol list
                             this.ACTION.push({
                                 "index": i,
                                 "character": "<HASH>",  // '<HASH>' for '#'
@@ -486,14 +495,14 @@ class SyntaxAnalyzer {
                             for (var tmpSearchSymbol of dfaNode.searchSymbol[j]) {
                                 this.ACTION.push({
                                     "index": i,
-                                    "character": tmpSearchSymbol, 
+                                    "character": tmpSearchSymbol,
                                     "content-type": "r",
                                     "content": productionIndex
                                 });
                             }
                         }
                     }
-                    
+
                 }
             }
         }
@@ -542,11 +551,11 @@ class SyntaxAnalyzer {
         console.log("DFA -> ACTION & GOTO table");
         this.createTables();
         console.log("ACTION table(" + this.ACTION.length + ")");
-        for(var tmp of this.ACTION) {
+        for (var tmp of this.ACTION) {
             console.log("(" + tmp.index + ", " + tmp.character + ") : " + tmp["content-type"] + tmp.content);
         }
         console.log("GOTO table(" + this.GOTO.length + ")");
-        for(var tmp of this.GOTO) {
+        for (var tmp of this.GOTO) {
             console.log("(" + tmp.index + ", " + tmp.state + ") : " + tmp.content);
         }
 
