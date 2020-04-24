@@ -36,7 +36,8 @@ class SyntaxAnalyzer {
                 var tmp: Array<string> = tmpProductionType["contents"][j]["right"].split(" ");
                 var rightTokenList: Array<string> = [];
                 for (var i of tmp) {
-                    if (i.length != 0) {  // remove empty string caused by invalid spaces
+                    if (i.length != 0 &&  // remove empty string caused by invalid spaces
+                        i != "<empty>") {  // remove <empty>
                         rightTokenList.push(i);
                     }
                 }

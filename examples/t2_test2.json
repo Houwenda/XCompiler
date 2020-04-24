@@ -43,5 +43,14 @@
                 "right":"1"
             }
         ]
+    },
+    {
+        "description":"test",
+        "contents":[
+            {
+                "left":"<N>",
+                "right":"<empty>"
+            }
+        ]
     }
 ]
