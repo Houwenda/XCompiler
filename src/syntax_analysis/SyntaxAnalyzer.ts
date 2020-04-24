@@ -75,7 +75,11 @@ class SyntaxAnalyzer {
                         result.add(tmp);
                     }
                 } else {  // common or alias, final
-                    result.add(this.promotedProductions[i]["right"][0]);
+                    if(this.promotedProductions[i]["right"].length > 0) {  // <empty> removed, right side can be empty
+                        result.add(this.promotedProductions[i]["right"][0]);
+                    } else {
+                        result.add("");  // if right side is empty, <empty> belongs to FIRST set
+                    }
                 }
             }
         }
