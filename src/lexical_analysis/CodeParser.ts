@@ -126,7 +126,7 @@ class CodeParser {
                 }
             }
         }
-        console.log("parsing succeeds");
+        console.log("parsing ends");
     }
 }
 

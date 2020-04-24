@@ -45,8 +45,8 @@ if (args.l != null && args.s == null) {  // lexical analysis
         var syntaxAnalyzer = new SA();
         syntaxAnalyzer.analyze(args.ps);
         console.log("code parsing starts");
-        var codeParser1  = new CP1(syntaxAnalyzer.DFA);
-        codeParser1.parse(codeParser.TokenStream);
+        var syntaxCodeParser  = new CP1(syntaxAnalyzer.ACTION, syntaxAnalyzer.GOTO);
+        syntaxCodeParser.parse(codeParser.TokenStream);
     }
 } else {
     console.log("wrong args.\n  -l for lexical analysis.\n  -s for syntax analysis.");

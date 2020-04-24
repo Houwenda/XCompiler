@@ -10,6 +10,8 @@ class SyntaxAnalyzer {
     FIRST: any = [];
     DFA: Array<any> = [];
     analyzedDFANodeCount = 0;
+    ACTION: Array<any> = [];
+    GOTO: Array<any> = [];
 
     // read production file & promote productions
     promoteProductions(productionFile: string): void {
@@ -430,6 +432,69 @@ class SyntaxAnalyzer {
         this.move();
     }
 
+    // create ACTION table & GOTO table
+    createTables():void {
+        for(var i:number = 0; i < this.DFA.length; i++) {
+            var dfaNode:LR1DFANode = this.DFA[i];
+            // create Si & GOTO by nextStates
+            for(var nextState of dfaNode.nextState) {
+                if(tokenType(nextState["character"]) == "state") {  // not final
+                    // add to GOTO table
+                    this.GOTO.push({
+                        "index": i,
+                        "state": nextState["character"],
+                        "content": nextState["index"]
+                    });
+                } else {  // final
+                    // add to ACTION table
+                    this.ACTION.push({
+                        "index": i,
+                        "character": nextState["character"],
+                        "content-type": "S",
+                        "content":nextState["index"]
+                    });
+                }
+            }
+
+            // add ri & acc to ACTION using productions
+            for(var j:number = 0; j < dfaNode.productionIndex.length; j++) {
+                var productionIndex:number = dfaNode.productionIndex[j];
+                var tmpProduction:any = this.promotedProductions[productionIndex];
+                if(dfaNode.position[j] == tmpProduction["right"].length) {  // dot is at the end
+                    // acc
+                    if(tmpProduction["left"] == "<S'>" && tmpProduction["right"][0] == "<CODE>" &&
+                    dfaNode.searchSymbol[j].length == 0) {
+                        this.ACTION.push({
+                            "index": i,
+                            "character": "<HASH>",  // '<HASH>' for '#'
+                            "content-type": "acc",
+                            "content":"acc"
+                        });
+                    } else {  // ri
+                        if(dfaNode.searchSymbol[j].length == 0) {  // empty search symbol list
+                            this.ACTION.push({
+                                "index": i,
+                                "character": "<HASH>",  // '<HASH>' for '#'
+                                "content-type": "r",
+                                "content": productionIndex
+                            });
+                        } else {  // search symbol list not empty
+                            for (var tmpSearchSymbol of dfaNode.searchSymbol[j]) {
+                                this.ACTION.push({
+                                    "index": i,
+                                    "character": tmpSearchSymbol, 
+                                    "content-type": "r",
+                                    "content": productionIndex
+                                });
+                            }
+                        }
+                    }
+                    
+                }
+            }
+        }
+    }
+
     analyze(productionFile: string): void {
         console.log("promote productions");
         this.promoteProductions(productionFile);
@@ -470,6 +535,16 @@ class SyntaxAnalyzer {
             console.log();
         }
 
+        console.log("DFA -> ACTION & GOTO table");
+        this.createTables();
+        console.log("ACTION table(" + this.ACTION.length + ")");
+        for(var tmp of this.ACTION) {
+            console.log("(" + tmp.index + ", " + tmp.character + ") : " + tmp["content-type"] + tmp.content);
+        }
+        console.log("GOTO table(" + this.GOTO.length + ")");
+        for(var tmp of this.GOTO) {
+            console.log("(" + tmp.index + ", " + tmp.state + ") : " + tmp.content);
+        }
 
     }
 }

@@ -1,329 +1,332 @@
 [
     {
-        "description":"code starts",
-        "contents":[
+        "description": "code starts",
+        "contents": [
             {
-                "left":"<CODE>",
-                "right":"<FUNCTION_DEFINITION>"
+                "left": "<CODE>",
+                "right": "<FUNCTION_DEFINITION>"
             }
         ]
     },
     {
-        "description":"function definition",
-        "contents":[
+        "description": "function definition",
+        "contents": [
             {
-                "left":"<FUNCTION_DEFINITION>",
-                "right":"function <identifier> ( <ARGS_STATEMENT> ) <FUNCTION_BLOCK> end"
+                "left": "<FUNCTION_DEFINITION>",
+                "right": "function <identifier> ( <ARGS_STATEMENT> ) <FUNCTION_BLOCK> end"
             }
         ]
     },
     {
-        "description":"function arguments statement",
-        "contents":[
+        "description": "function arguments statement",
+        "contents": [
             {
-                "left":"<ARGS_STATEMENT>",
-                "right":"<STATEMENT> <STATEMENT_CLOSURE>"
+                "left": "<ARGS_STATEMENT>",
+                "right": "<STATEMENT> <STATEMENT_CLOSURE>"
             },
             {
-                "left":"<ARGS_STATEMENT>",
-                "right":"<empty>"
+                "left": "<ARGS_STATEMENT>",
+                "right": "<empty>"
             }
         ]
     },
     {
-        "description":"statements",
-        "contents":[
+        "description": "statements",
+        "contents": [
             {
-                "left":"<STATEMENT>",
-                "right":"<identifier>"
+                "left": "<STATEMENT>",
+                "right": "<identifier>"
             },
             {
-                "left":"<STATEMENT_CLOSURE>",
-                "right":", <STATEMENT> <STATEMENT_CLOSURE>"
+                "left": "<STATEMENT_CLOSURE>",
+                "right": ", <STATEMENT> <STATEMENT_CLOSURE>"
             },
             {
-                "left":"<STATEMENT_CLOSURE>",
-                "right":"<empty>"
+                "left": "<STATEMENT_CLOSURE>",
+                "right": "<empty>"
             }
         ]
     },
     {
-        "description":"function block",
-        "contents":[
+        "description": "function block",
+        "contents": [
             {
-                "left":"<FUNCTION_BLOCK>",
-                "right":"<FUNCTION_BLOCK_CLOSURE>"
+                "left": "<FUNCTION_BLOCK>",
+                "right": "<FUNCTION_BLOCK_CLOSURE>"
             },
             {
-                "left":"<FUNCTION_BLOCK_CLOSURE>",
-                "right":"<STATEMENT> <FUNCTION_BLOCK_CLOSURE>"
+                "left": "<FUNCTION_BLOCK_CLOSURE>",
+                "right": "<STATEMENT> <FUNCTION_BLOCK_CLOSURE>"
             },
             {
-                "left":"<FUNCTION_BLOCK_CLOSURE>",
-                "right":"<ASSIGNMENT_FUNCTION> <FUNCTION_BLOCK_CLOSURE>"
+                "left": "<FUNCTION_BLOCK_CLOSURE>",
+                "right": "<ASSIGNMENT_FUNCTION> <FUNCTION_BLOCK_CLOSURE>"
             },
             {
-                "left":"<FUNCTION_BLOCK_CLOSURE>",
-                "right":"<FOR_LOOP> <FUNCTION_BLOCK_CLOSURE>"
+                "left": "<FUNCTION_BLOCK_CLOSURE>",
+                "right": "<FOR_LOOP> <FUNCTION_BLOCK_CLOSURE>"
             },
             {
-                "left":"<FUNCTION_BLOCK_CLOSURE>",
-                "right":"<WHILE_LOOP> <FUNCTION_BLOCK_CLOSURE>"
+                "left": "<FUNCTION_BLOCK_CLOSURE>",
+                "right": "<WHILE_LOOP> <FUNCTION_BLOCK_CLOSURE>"
             },
             {
-                "left":"<FUNCTION_BLOCK_CLOSURE>",
-                "right":"<BRANCH_SENTENCE> <FUNCTION_BLOCK_CLOSURE>"
+                "left": "<FUNCTION_BLOCK_CLOSURE>",
+                "right": "<BRANCH_SENTENCE> <FUNCTION_BLOCK_CLOSURE>"
             },
             {
-                "left":"<FUNCTION_BLOCK_CLOSURE>",
-                "right":"<FUNCTION_RETURN> <FUNCTION_BLOCK_CLOSURE>"
+                "left": "<FUNCTION_BLOCK_CLOSURE>",
+                "right": "<FUNCTION_RETURN> <FUNCTION_BLOCK_CLOSURE>"
             },
             {
-                "left":"<FUNCTION_BLOCK_CLOSURE>",
-                "right":"<empty>"
+                "left": "<FUNCTION_BLOCK_CLOSURE>",
+                "right": "<empty>"
             },
             {
-                "left":"<ASSIGNMENT_FUNCTION>",
-                "right":"<identifier> <ASSIGNMENT_OR_FUNCTION_CALL>"
+                "left": "<ASSIGNMENT_FUNCTION>",
+                "right": "<identifier> <ASSIGNMENT_OR_FUNCTION_CALL>"
             }
         ]
     },
     {
-        "description":"assignment or function call",
-        "contents":[
+        "description": "assignment or function call",
+        "contents": [
             {
-                "left":"<ASSIGNMENT_OR_FUNCTION_CALL>",
-                "right":"= <RIGHT_VALUE>"
+                "left": "<ASSIGNMENT_OR_FUNCTION_CALL>",
+                "right": "= <RIGHT_VALUE>"
             },
             {
-                "left":"<ASSIGNMENT_OR_FUNCTION_CALL>",
-                "right":"+= <RIGHT_VALUE>"
+                "left": "<ASSIGNMENT_OR_FUNCTION_CALL>",
+                "right": "+= <RIGHT_VALUE>"
             },
             {
-                "left":"<ASSIGNMENT_OR_FUNCTION_CALL>",
-                "right":"-= <RIGHT_VALUE>"
+                "left": "<ASSIGNMENT_OR_FUNCTION_CALL>",
+                "right": "-= <RIGHT_VALUE>"
             },
             {
-                "left":"<ASSIGNMENT_OR_FUNCTION_CALL>",
-                "right":"*= <RIGHT_VALUE>"
+                "left": "<ASSIGNMENT_OR_FUNCTION_CALL>",
+                "right": "*= <RIGHT_VALUE>"
             },
             {
-                "left":"<ASSIGNMENT_OR_FUNCTION_CALL>",
-                "right":"/= <RIGHT_VALUE>"
-            },{
-                "left":"<ASSIGNMENT_OR_FUNCTION_CALL>",
-                "right":"%= <RIGHT_VALUE>"
+                "left": "<ASSIGNMENT_OR_FUNCTION_CALL>",
+                "right": "/= <RIGHT_VALUE>"
             },
             {
-                "left":"<ASSIGNMENT_OR_FUNCTION_CALL>",
-                "right":"( <ARGS_LIST> )"
+                "left": "<ASSIGNMENT_OR_FUNCTION_CALL>",
+                "right": "%= <RIGHT_VALUE>"
+            },
+            {
+                "left": "<ASSIGNMENT_OR_FUNCTION_CALL>",
+                "right": "( <ARGS_LIST> )"
             }
         ]
     },
     {
-        "description":"list of arguments",
-        "contents":[
+        "description": "list of arguments",
+        "contents": [
             {
-                "left":"<ARGS_LIST>",
-                "right":"<ARG> <ARG_CLOSURE>"
+                "left": "<ARGS_LIST>",
+                "right": "<ARG> <ARG_CLOSURE>"
             },
             {
-                "left":"<ARG_CLOSURE>",
-                "right":", <ARG> <ARG_CLOSURE>"
+                "left": "<ARG_CLOSURE>",
+                "right": ", <ARG> <ARG_CLOSURE>"
             },
             {
-                "left":"<ARG_CLOSURE>",
-                "right":"<empty>"
+                "left": "<ARG_CLOSURE>",
+                "right": "<empty>"
             },
             {
-                "left":"<ARG>",
-                "right":"<identifier>"
+                "left": "<ARG>",
+                "right": "<identifier>"
             },
             {
-                "left":"<ARG>",
-                "right":"<constant>"
+                "left": "<ARG>",
+                "right": "<constant>"
             }
         ]
     },
     {
-        "description":"right value",
-        "contents":[
+        "description": "right value",
+        "contents": [
             {
-                "left":"<RIGHT_VALUE>",
-                "right":"<EXPRESSION>"
+                "left": "<RIGHT_VALUE>",
+                "right": "<EXPRESSION>"
             },
             {
-                "left":"<RIGHT_VALUE>",
-                "right":"- <EXPRESSION>"
+                "left": "<RIGHT_VALUE>",
+                "right": "- <EXPRESSION>"
             },
             {
-                "left":"<RIGHT_VALUE>",
-                "right":"<MULTIPULE_DATA>"
-            }
-        ]
-    },{
-        "description":"expression",
-        "contents":[
-            {
-                "left":"<EXPRESSION>",
-                "right":"<FACTOR> <TERM>"
-            },
-            {
-                "left":"<FACTOR>",
-                "right":"<FACTOR_FORMULA> <FACTOR_FORMULA_RECURSION>"
-            },
-            {
-                "left":"<FACTOR_FORMULA>",
-                "right":"( <EXPRESSION> )"
-            },
-            {
-                "left":"<FACTOR_FORMULA>",
-                "right":"<identifier>"
-            },
-            {
-                "left":"<FACTOR_FORMULA>",
-                "right":"<constant>"
-            },
-            {
-                "left":"<TERM>",
-                "right":"+ <FACTOR> <TERM>"
-            },
-            {
-                "left":"<TERM>",
-                "right":"- <FACTOR> <TERM>"
-            },
-            {
-                "left":"<TERM>",
-                "right":"<empty>"
-            },
-            {
-                "left":"<FACTOR_FORMULA_RECURSION>",
-                "right":"* <FACTOR_FORMULA> <FACTOR_FORMULA_RECURSION"
-            },
-            {
-                "left":"<FACTOR_FORMULA_RECURSION>",
-                "right":"/ <FACTOR_FORMULA> <FACTOR_FORMULA_RECURSION"
-            },
-            {
-                "left":"<FACTOR_FORMULA_RECURSION>",
-                "right":"<empty>"
-            }
-        ]
-    },{
-        "description":"multiple data",
-        "contents":[
-            {
-                "left":"<MULTIPULE_DATA>",
-                "right":"<constant> <CONSTANT_CLOSURE>"
-            },
-            {
-                "left":"<CONSTANT_CLOSURE>",
-                "right":", <constant> <CONSTANT_CLOSURE>"
-            },
-            {
-                "left":"<CONSTANT_CLOSURE>",
-                "right":"<empty>"
+                "left": "<RIGHT_VALUE>",
+                "right": "<MULTIPULE_DATA>"
             }
         ]
     },
     {
-        "description":"for loop",
-        "contents":[
+        "description": "expression",
+        "contents": [
             {
-                "left":"<FOR_LOOP>",
-                "right":"for <identifier> = <EXPRESSION> , <EXPRESSION> , <EXPRESSION> do <FUNCTION_BLOCK> end"
+                "left": "<EXPRESSION>",
+                "right": "<FACTOR> <TERM>"
+            },
+            {
+                "left": "<FACTOR>",
+                "right": "<FACTOR_FORMULA> <FACTOR_FORMULA_RECURSION>"
+            },
+            {
+                "left": "<FACTOR_FORMULA>",
+                "right": "( <EXPRESSION> )"
+            },
+            {
+                "left": "<FACTOR_FORMULA>",
+                "right": "<identifier>"
+            },
+            {
+                "left": "<FACTOR_FORMULA>",
+                "right": "<constant>"
+            },
+            {
+                "left": "<TERM>",
+                "right": "+ <FACTOR> <TERM>"
+            },
+            {
+                "left": "<TERM>",
+                "right": "- <FACTOR> <TERM>"
+            },
+            {
+                "left": "<TERM>",
+                "right": "<empty>"
+            },
+            {
+                "left": "<FACTOR_FORMULA_RECURSION>",
+                "right": "* <FACTOR_FORMULA> <FACTOR_FORMULA_RECURSION"
+            },
+            {
+                "left": "<FACTOR_FORMULA_RECURSION>",
+                "right": "/ <FACTOR_FORMULA> <FACTOR_FORMULA_RECURSION"
+            },
+            {
+                "left": "<FACTOR_FORMULA_RECURSION>",
+                "right": "<empty>"
             }
         ]
     },
     {
-        "description":"while loop",
-        "contents":[
+        "description": "multiple data",
+        "contents": [
             {
-                "left":"<WHILE_LOOP>",
-                "right":"while ( <LOGICAL_EXPRESSION> ) do <FUNCTION_BLOCK> end"
+                "left": "<MULTIPULE_DATA>",
+                "right": "<constant> <CONSTANT_CLOSURE>"
+            },
+            {
+                "left": "<CONSTANT_CLOSURE>",
+                "right": ", <constant> <CONSTANT_CLOSURE>"
+            },
+            {
+                "left": "<CONSTANT_CLOSURE>",
+                "right": "<empty>"
             }
         ]
     },
     {
-        "description":"logical expression",
-        "contents":[
+        "description": "for loop",
+        "contents": [
             {
-                "left":"<LOGICAL_EXPRESSION>",
-                "right":"<EXPRESSION> <LOGICAL_OPERATOR> <EXPRESSION>"
-            },
-            {
-                "left":"<LOGICAL_EXPRESSION>",
-                "right":"( <LOGICAL_EXPRESSION> ) <LOGICAL_OPERATOR> ( <LOGICAL_EXPRESSION> )"
-            },
-            {
-                "left":"<LOGICAL_EXPRESSION>",
-                "right":"! ( <LOGICAL_EXPRESSION> )"
-            },
-            {
-                "left":"<LOGICAL_OPERATOR>",
-                "right":"and"
-            },
-            {
-                "left":"<LOGICAL_OPERATOR>",
-                "right":"or"
-            },
-            {
-                "left":"<LOGICAL_OPERATOR>",
-                "right":"not"
-            },
-            {
-                "left":"<LOGICAL_OPERATOR>",
-                "right":"=="
-            },
-            {
-                "left":"<LOGICAL_OPERATOR>",
-                "right":"!="
-            },
-            {
-                "left":"<LOGICAL_OPERATOR>",
-                "right":">"
-            },
-            {
-                "left":"<LOGICAL_OPERATOR>",
-                "right":">="
-            },
-            {
-                "left":"<LOGICAL_OPERATOR>",
-                "right":"<"
-            },
-            {
-                "left":"<LOGICAL_OPERATOR>",
-                "right":"<="
+                "left": "<FOR_LOOP>",
+                "right": "for <identifier> = <EXPRESSION> , <EXPRESSION> , <EXPRESSION> do <FUNCTION_BLOCK> end"
             }
         ]
     },
     {
-        "description":"branch sentence",
-        "contents":[
+        "description": "while loop",
+        "contents": [
             {
-                "left":"<BRANCH_SENTENCE>",
-                "right":"if ( <LOGICAL_EXPRESSION> ) then <FUNCTION_BLOCK> <ELSE_SENTENCE> end"
-            },
-            {
-                "left":"<ELSE_SENTENCE>",
-                "right":"elseif ( <LOGICAL_EXPRESSION> ) then <FUNCTION_BLOCK>"
-            },
-            {
-                "left":"<ELSE_SENTENCE>",
-                "right":"else <FUNCTION_BLOCK>"
-            },
-            {
-                "left":"<ELSE_SENTENCE>",
-                "right":"<empty>"
+                "left": "<WHILE_LOOP>",
+                "right": "while ( <LOGICAL_EXPRESSION> ) do <FUNCTION_BLOCK> end"
             }
         ]
     },
     {
-        "description":"function return",
-        "contents":[
+        "description": "logical expression",
+        "contents": [
             {
-                "left":"<FUNCTION_RETURN>",
-                "right":"return <FACTOR_FORMULA>"
+                "left": "<LOGICAL_EXPRESSION>",
+                "right": "<EXPRESSION> <LOGICAL_OPERATOR> <EXPRESSION>"
+            },
+            {
+                "left": "<LOGICAL_EXPRESSION>",
+                "right": "( <LOGICAL_EXPRESSION> ) <LOGICAL_OPERATOR> ( <LOGICAL_EXPRESSION> )"
+            },
+            {
+                "left": "<LOGICAL_EXPRESSION>",
+                "right": "! ( <LOGICAL_EXPRESSION> )"
+            },
+            {
+                "left": "<LOGICAL_OPERATOR>",
+                "right": "and"
+            },
+            {
+                "left": "<LOGICAL_OPERATOR>",
+                "right": "or"
+            },
+            {
+                "left": "<LOGICAL_OPERATOR>",
+                "right": "not"
+            },
+            {
+                "left": "<LOGICAL_OPERATOR>",
+                "right": "=="
+            },
+            {
+                "left": "<LOGICAL_OPERATOR>",
+                "right": "!="
+            },
+            {
+                "left": "<LOGICAL_OPERATOR>",
+                "right": ">"
+            },
+            {
+                "left": "<LOGICAL_OPERATOR>",
+                "right": ">="
+            },
+            {
+                "left": "<LOGICAL_OPERATOR>",
+                "right": "<"
+            },
+            {
+                "left": "<LOGICAL_OPERATOR>",
+                "right": "<="
+            }
+        ]
+    },
+    {
+        "description": "branch sentence",
+        "contents": [
+            {
+                "left": "<BRANCH_SENTENCE>",
+                "right": "if ( <LOGICAL_EXPRESSION> ) then <FUNCTION_BLOCK> <ELSE_SENTENCE> end"
+            },
+            {
+                "left": "<ELSE_SENTENCE>",
+                "right": "elseif ( <LOGICAL_EXPRESSION> ) then <FUNCTION_BLOCK>"
+            },
+            {
+                "left": "<ELSE_SENTENCE>",
+                "right": "else <FUNCTION_BLOCK>"
+            },
+            {
+                "left": "<ELSE_SENTENCE>",
+                "right": "<empty>"
+            }
+        ]
+    },
+    {
+        "description": "function return",
+        "contents": [
+            {
+                "left": "<FUNCTION_RETURN>",
+                "right": "return <FACTOR_FORMULA>"
             }
         ]
     }
