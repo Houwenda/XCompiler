@@ -34,9 +34,9 @@ if (args.l != null && args.s == null) {  // lexical analysis
         var codeParser = new CP(lexicalAnalyzer.DFA);
         codeParser.parse(args.c);
         // output
-        // for(var i in codeParser.TokenStream) {
-        //     console.log(codeParser.TokenStream[i]);
-        // }
+        for(var i in codeParser.TokenStream) {
+            console.log(codeParser.TokenStream[i]);
+        }
 
         // syntax analysis
         console.log("########## syntax analysis ##########")
