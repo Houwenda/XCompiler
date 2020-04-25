@@ -1,55 +1,55 @@
 [
     {
-        "description":"test",
-        "contents":[
+        "description": "test",
+        "contents": [
             {
-                "left":"<CODE>",
-                "right":"<X> + <CODE>"
+                "left": "<CODE>",
+                "right": "<X> + <CODE>"
             }
         ]
     },
     {
-        "description":"test",
-        "contents":[
+        "description": "test",
+        "contents": [
             {
-                "left":"<CODE>",
-                "right":"<X> - <CODE>"
+                "left": "<CODE>",
+                "right": "<X> - <CODE>"
             }
         ]
     },
     {
-        "description":"test",
-        "contents":[
+        "description": "test",
+        "contents": [
             {
-                "left":"<X>",
-                "right":"<N> * <X>"
+                "left": "<X>",
+                "right": "<N> * <X>"
             }
         ]
     },
     {
-        "description":"test",
-        "contents":[
+        "description": "test",
+        "contents": [
             {
-                "left":"<X>",
-                "right":"<N> / <X>"
+                "left": "<X>",
+                "right": "<N> / <X>"
             }
         ]
     },
     {
-        "description":"test",
-        "contents":[
+        "description": "test",
+        "contents": [
             {
-                "left":"<N>",
-                "right":"1"
+                "left": "<N>",
+                "right": "1"
             }
         ]
     },
     {
-        "description":"test",
-        "contents":[
+        "description": "test",
+        "contents": [
             {
-                "left":"<N>",
-                "right":"<empty>"
+                "left": "<N>",
+                "right": "<empty>"
             }
         ]
     }

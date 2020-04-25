@@ -114,8 +114,8 @@ class SyntaxAnalyzer {
                 var searchSymbol: Set<string> = new Set();
                 if (dotPosition < productionRight.length - 1) {  // has more than 1 token behind dot, e.g. S->.Sa, S->.SA
                     if (tokenType(productionRight[dotPosition + 1]) == "state") {  // not final
-                        var searchIndex:number = 1;
-                        while(searchSymbol.size == 0 && dotPosition + searchIndex < productionRight.length) {
+                        var searchIndex: number = 1;
+                        while (searchSymbol.size == 0 && dotPosition + searchIndex < productionRight.length) {
                             searchSymbol = this.firstVT(productionRight[dotPosition + searchIndex]);
                             searchIndex++;
                         }

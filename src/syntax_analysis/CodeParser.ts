@@ -42,8 +42,8 @@ class CodeParser {
     parse(tokenStream: Array<any>): void {
         // add stop sign <HASH>
         tokenStream.push({
-            "line": -1, 
-            "type": 'HASH', 
+            "line": -1,
+            "type": 'HASH',
             "token": '<HASH>'
         });
 
