@@ -1,6 +1,6 @@
 function main()
     _value123=7
-    str="abcd123./,[;]#@!~&^\r\n"
+    str={"abcd\"123./,", "[;]#@!'~&^\r\n"}
     while(_value123>=0) do
         _value123= _value123 - 1
     end

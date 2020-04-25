@@ -12,6 +12,75 @@
 - 各项由空格隔开
 - 入口标识为`<CODE>`
 
+文法设计：
+```
+<代码入口> -> <函数定义>
+<函数定义> -> function <标识符> ( <参数声明> ) 函数块 end
+<参数声明> -> <声明> <声明闭包>
+<参数声明> ->
+<声明> -> <标识符>
+<声明闭包> -> , <声明> <声明闭包>
+<声明闭包> -> 
+<函数块> -> <函数块闭包>
+<函数块闭包> -> <声明> <函数块闭包> 
+<函数块闭包> -> <赋值函数> <函数块闭包> 
+<函数块闭包> -> <for循环> <函数块闭包> 
+<函数块闭包> -> <while循环> <函数块闭包> 
+<函数块闭包> -> <分支语句> <函数块闭包> 
+<函数块闭包> -> <函数返回> <函数块闭包> 
+<函数块闭包> -> 
+<赋值函数> -> <标识符> <赋值或函数调用> 
+<赋值或函数调用> -> = <右值> 
+<赋值或函数调用> -> += <右值> 
+<赋值或函数调用> -> -= <右值> 
+<赋值或函数调用> -> *= <右值> 
+<赋值或函数调用> -> /= <右值> 
+<赋值或函数调用> -> %= <右值> 
+<赋值或函数调用> -> = { <参数列表> }
+<赋值或函数调用> -> = { }
+<参数列表> -> <参数> <参数闭包>
+<参数闭包> -> , <参数> <参数闭包>
+<参数闭包> -> 
+<参数> -> <标识符>
+<参数> -> <常量>
+<右值> -> <表达式>
+<右值> -> - <表达式>
+<右值> -> <多项数据>
+<表达式> -> <因子> <项>
+<因子> -> <因式> <因式递归>
+<因式> -> ( <表达式> )
+<因式> -> <标识符>
+<因式> -> <常量>
+<项> -> + <因子> <项>
+<项> -> - <因子> <项>
+<项> ->
+<因式递归> -> * <因式> <因式递归>
+<因式递归> -> / <因式> <因式递归>
+<因式递归> ->
+<多项数据> -> <常量> <常量闭包>
+<常量闭包> -> , <常量> <常量闭包>
+<常量闭包> -> 
+<for循环> -> for <标识符> = <表达式> ， <表达式> ， <表达式> do <函数块> end
+<while循环> -> while ( <逻辑表达式> ) do <函数块> end
+<逻辑表达式> -> <表达式> <逻辑运算符> <表达式>
+<逻辑表达式> -> ( <表达式> ) <逻辑运算符> ( <表达式> )
+<逻辑表达式> -> ! ( <逻辑表达式> )
+<逻辑运算符> -> and 
+<逻辑运算符> -> or
+<逻辑运算符> -> not
+<逻辑运算符> -> ==
+<逻辑运算符> -> !=
+<逻辑运算符> -> >
+<逻辑运算符> -> >=
+<逻辑运算符> -> <
+<逻辑运算符> -> <=
+<分支语句> -> if ( <逻辑表达式> ) then <函数块><否则语句> end
+<否则语句>-> elseif ( <逻辑表达式> ) then <函数块> <否则语句>
+<否则语句> -> else <函数块>
+<否则语句> ->
+<函数返回> -> return <因式> 
+```
+
 拓广文法（自动拓广，`<empty>`已做删除处理）：
 ```
 (0) <S'> -> <CODE> 
@@ -37,48 +106,49 @@
 (20) <ASSIGNMENT_OR_FUNCTION_CALL> -> *= <RIGHT_VALUE> 
 (21) <ASSIGNMENT_OR_FUNCTION_CALL> -> /= <RIGHT_VALUE> 
 (22) <ASSIGNMENT_OR_FUNCTION_CALL> -> %= <RIGHT_VALUE> 
-(23) <ASSIGNMENT_OR_FUNCTION_CALL> -> ( <ARGS_LIST> ) 
-(24) <ARGS_LIST> -> <ARG> <ARG_CLOSURE> 
-(25) <ARG_CLOSURE> -> , <ARG> <ARG_CLOSURE> 
-(26) <ARG_CLOSURE> -> 
-(27) <ARG> -> <identifier> 
-(28) <ARG> -> <constant> 
-(29) <RIGHT_VALUE> -> <EXPRESSION> 
-(30) <RIGHT_VALUE> -> - <EXPRESSION> 
-(31) <RIGHT_VALUE> -> <MULTIPULE_DATA> 
-(32) <EXPRESSION> -> <FACTOR> <TERM> 
-(33) <FACTOR> -> <FACTOR_FORMULA> <FACTOR_FORMULA_RECURSION> 
-(34) <FACTOR_FORMULA> -> ( <EXPRESSION> ) 
-(35) <FACTOR_FORMULA> -> <identifier> 
-(36) <FACTOR_FORMULA> -> <constant> 
-(37) <TERM> -> + <FACTOR> <TERM> 
-(38) <TERM> -> - <FACTOR> <TERM> 
-(39) <TERM> -> 
-(40) <FACTOR_FORMULA_RECURSION> -> * <FACTOR_FORMULA> <FACTOR_FORMULA_RECURSION> 
-(41) <FACTOR_FORMULA_RECURSION> -> / <FACTOR_FORMULA> <FACTOR_FORMULA_RECURSION> 
-(42) <FACTOR_FORMULA_RECURSION> -> 
-(43) <MULTIPULE_DATA> -> <constant> <CONSTANT_CLOSURE> 
-(44) <CONSTANT_CLOSURE> -> , <constant> <CONSTANT_CLOSURE> 
-(45) <CONSTANT_CLOSURE> -> 
-(46) <FOR_LOOP> -> for <identifier> = <EXPRESSION> , <EXPRESSION> , <EXPRESSION> do <FUNCTION_BLOCK> end 
-(47) <WHILE_LOOP> -> while ( <LOGICAL_EXPRESSION> ) do <FUNCTION_BLOCK> end 
-(48) <LOGICAL_EXPRESSION> -> <EXPRESSION> <LOGICAL_OPERATOR> <EXPRESSION> 
-(49) <LOGICAL_EXPRESSION> -> ( <LOGICAL_EXPRESSION> ) <LOGICAL_OPERATOR> ( <LOGICAL_EXPRESSION> ) 
-(50) <LOGICAL_EXPRESSION> -> ! ( <LOGICAL_EXPRESSION> ) 
-(51) <LOGICAL_OPERATOR> -> and 
-(52) <LOGICAL_OPERATOR> -> or 
-(53) <LOGICAL_OPERATOR> -> not 
-(54) <LOGICAL_OPERATOR> -> == 
-(55) <LOGICAL_OPERATOR> -> != 
-(56) <LOGICAL_OPERATOR> -> > 
-(57) <LOGICAL_OPERATOR> -> >= 
-(58) <LOGICAL_OPERATOR> -> < 
-(59) <LOGICAL_OPERATOR> -> <= 
-(60) <BRANCH_SENTENCE> -> if ( <LOGICAL_EXPRESSION> ) then <FUNCTION_BLOCK> <ELSE_SENTENCE> end 
-(61) <ELSE_SENTENCE> -> elseif ( <LOGICAL_EXPRESSION> ) then <FUNCTION_BLOCK> 
-(62) <ELSE_SENTENCE> -> else <FUNCTION_BLOCK> 
-(63) <ELSE_SENTENCE> -> 
-(64) <FUNCTION_RETURN> -> return <FACTOR_FORMULA> 
+(23) <ASSIGNMENT_OR_FUNCTION_CALL> -> = { <ARGS_LIST> } 
+(24) <ASSIGNMENT_OR_FUNCTION_CALL> -> { } 
+(25) <ARGS_LIST> -> <ARG> <ARG_CLOSURE> 
+(26) <ARG_CLOSURE> -> , <ARG> <ARG_CLOSURE> 
+(27) <ARG_CLOSURE> -> 
+(28) <ARG> -> <identifier> 
+(29) <ARG> -> <constant> 
+(30) <RIGHT_VALUE> -> <EXPRESSION> 
+(31) <RIGHT_VALUE> -> - <EXPRESSION> 
+(32) <RIGHT_VALUE> -> <MULTIPULE_DATA> 
+(33) <EXPRESSION> -> <FACTOR> <TERM> 
+(34) <FACTOR> -> <FACTOR_FORMULA> <FACTOR_FORMULA_RECURSION> 
+(35) <FACTOR_FORMULA> -> ( <EXPRESSION> ) 
+(36) <FACTOR_FORMULA> -> <identifier> 
+(37) <FACTOR_FORMULA> -> <constant> 
+(38) <TERM> -> + <FACTOR> <TERM> 
+(39) <TERM> -> - <FACTOR> <TERM> 
+(40) <TERM> -> 
+(41) <FACTOR_FORMULA_RECURSION> -> * <FACTOR_FORMULA> <FACTOR_FORMULA_RECURSION> 
+(42) <FACTOR_FORMULA_RECURSION> -> / <FACTOR_FORMULA> <FACTOR_FORMULA_RECURSION> 
+(43) <FACTOR_FORMULA_RECURSION> -> 
+(44) <MULTIPULE_DATA> -> <constant> <CONSTANT_CLOSURE> 
+(45) <CONSTANT_CLOSURE> -> , <constant> <CONSTANT_CLOSURE> 
+(46) <CONSTANT_CLOSURE> -> 
+(47) <FOR_LOOP> -> for <identifier> = <EXPRESSION> , <EXPRESSION> , <EXPRESSION> do <FUNCTION_BLOCK> end 
+(48) <WHILE_LOOP> -> while ( <LOGICAL_EXPRESSION> ) do <FUNCTION_BLOCK> end 
+(49) <LOGICAL_EXPRESSION> -> <EXPRESSION> <LOGICAL_OPERATOR> <EXPRESSION> 
+(50) <LOGICAL_EXPRESSION> -> ( <LOGICAL_EXPRESSION> ) <LOGICAL_OPERATOR> ( <LOGICAL_EXPRESSION> ) 
+(51) <LOGICAL_EXPRESSION> -> ! ( <LOGICAL_EXPRESSION> ) 
+(52) <LOGICAL_OPERATOR> -> and 
+(53) <LOGICAL_OPERATOR> -> or 
+(54) <LOGICAL_OPERATOR> -> not 
+(55) <LOGICAL_OPERATOR> -> == 
+(56) <LOGICAL_OPERATOR> -> != 
+(57) <LOGICAL_OPERATOR> -> > 
+(58) <LOGICAL_OPERATOR> -> >= 
+(59) <LOGICAL_OPERATOR> -> < 
+(60) <LOGICAL_OPERATOR> -> <= 
+(61) <BRANCH_SENTENCE> -> if ( <LOGICAL_EXPRESSION> ) then <FUNCTION_BLOCK> <ELSE_SENTENCE> end 
+(62) <ELSE_SENTENCE> -> elseif ( <LOGICAL_EXPRESSION> ) then <FUNCTION_BLOCK> <ELSE_SENTENCE> 
+(63) <ELSE_SENTENCE> -> else <FUNCTION_BLOCK> 
+(64) <ELSE_SENTENCE> -> 
+(65) <FUNCTION_RETURN> -> return <FACTOR_FORMULA> 
 ```
 
 中间状态对照表：

@@ -251,12 +251,16 @@
             {
                 "description": "strings",
                 "production": [
-                    "A-><\">B",
-                    "B-><dot1>B",
-                    "B-><\">",
-                    "A-><'>C",
-                    "C-><dot2>C",
-                    "C-><'>"
+                    "A-><\">B", 
+                    "B-><dot1>B", 
+                    "B-><\\>C",
+                    "C-><\">B",
+                    "B-><\">", 
+                    "A-><'>D", 
+                    "D-><dot2>D", 
+                    "D-><\\>E",
+                    "E-><'>D",
+                    "D-><'>"
                 ]
             }
         ]
@@ -455,6 +459,12 @@
                 "description": ".",
                 "production": [
                     "A-><.>"
+                ]
+            },
+            {
+                "description": ";",
+                "production": [
+                    "A-><;>"
                 ]
             }
         ]

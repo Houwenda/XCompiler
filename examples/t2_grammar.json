@@ -117,7 +117,11 @@
             },
             {
                 "left": "<ASSIGNMENT_OR_FUNCTION_CALL>",
-                "right": "( <ARGS_LIST> )"
+                "right": "= { <ARGS_LIST> }"
+            },
+            {
+                "left": "<ASSIGNMENT_OR_FUNCTION_CALL>",
+                "right": "{ }"
             }
         ]
     },
@@ -309,7 +313,7 @@
             },
             {
                 "left": "<ELSE_SENTENCE>",
-                "right": "elseif ( <LOGICAL_EXPRESSION> ) then <FUNCTION_BLOCK>"
+                "right": "elseif ( <LOGICAL_EXPRESSION> ) then <FUNCTION_BLOCK> <ELSE_SENTENCE>"
             },
             {
                 "left": "<ELSE_SENTENCE>",

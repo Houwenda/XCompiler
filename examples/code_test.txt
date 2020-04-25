@@ -1,5 +1,5 @@
 function main(a, b)
     test(a)
-    b = a + b
+    b = a
     return b
 end

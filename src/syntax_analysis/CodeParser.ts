@@ -56,17 +56,21 @@ class CodeParser {
             console.log("\nanalyzing :", inputToken);
             var actionResult: any = this.queryAction(stateStack[stateStack.length - 1], inputToken);
             if (actionResult == null) {  // empty result, error
-                console.log("error occured when querying ACTION table");
+                console.log("error occured when querying ACTION table with token:", inputToken);
                 //console.log(stateStack[stateStack.length - 1], inputToken)//
-                console.log("ACTION[" + stateStack[stateStack.length - 1] + "]");
+                console.log("state stack:\n", stateStack)
+                console.log("symbol stack:\n", symbolStack)
+                console.log("ACTION[" + stateStack[stateStack.length - 1] + "]:");
                 for (var tmpAction of this.ACTION) {
                     if (tmpAction["index"] == stateStack[stateStack.length - 1]) {
                         console.log(tmpAction);
                     }
                 }
-                //console.log(stateStack)//
-                //console.log(symbolStack)//
                 // TODO: debug info
+                console.log("error matching! tokens left: ");
+                for(var i:number = analyzedTokenCount; i < tokenStream.length && i < analyzedTokenCount+15; i++) {
+                    console.log(tokenStream[i]);
+                }
                 return;
             } else if (actionResult["content-type"] == "S") {  // move in 
                 console.log("move in")//
@@ -84,15 +88,22 @@ class CodeParser {
                 }
                 var gotoResult: any = this.queryGOTO(stateStack[stateStack.length - 1], production["left"]);
                 if (gotoResult == null) {  // empty GOTO result, error
-                    console.log("error occured when querying GOTO table");
+                    console.log("error occured when querying GOTO table with production left:", production["left"]);
                     //console.log(stateStack[stateStack.length - 1], production["left"])//
                     //console.log("ACTION[" + stateStack[stateStack.length - 1] + "]");
+                    console.log("state stack:\n", stateStack);
+                    console.log("symbol stack:\n", symbolStack);
+                    console.log("ACTION[" + stateStack[stateStack.length - 1] + "]:");
                     for (var tmpGoto of this.GOTO) {
                         if (tmpGoto["index"] == stateStack[stateStack.length - 1]) {
                             console.log(tmpGoto);
                         }
                     }
                     // TODO: debug info
+                    console.log("error matching! tokens left: ");
+                    for(var i:number = analyzedTokenCount; i < tokenStream.length && i < analyzedTokenCount+40; i++) {
+                        console.log(tokenStream[i]);
+                    }
                     return;
                 } else {
                     stateStack.push(gotoResult["content"]);
@@ -107,7 +118,6 @@ class CodeParser {
                     "type": inputToken["type"],
                     "token": production["left"]
                 });
-                //analyzedTokenCount--; // keep analyzing current input token
                 //console.log(stateStack)//
                 //console.log(symbolStack)//
             } else if (actionResult["content-type"] == "acc") {  // accept
@@ -124,8 +134,6 @@ class CodeParser {
             console.log(stateStack)//
             console.log(symbolStack)//
 
-
-            //analyzedTokenCount++;
         }
         console.log("parsing ends");
     }
