@@ -1,4 +1,4 @@
-import { match } from "assert";
+import { match, deepEqual } from "assert";
 
 const fs = require("fs");
 const LR1DFANode = require("./Node").LR1DFANode;
@@ -81,9 +81,9 @@ class SyntaxAnalyzer {
                 } else {  // common or alias, final
                     if (this.promotedProductions[i]["right"].length > 0) {  // <empty> removed, right side can be empty
                         result.add(this.promotedProductions[i]["right"][0]);
-                    } //else {
-                        //result.add("");  // if right side is empty, <empty> belongs to FIRST set
-                    //}
+                    } else {
+                        result.add("<HASH>");  // if right side is empty, <empty> belongs to FIRST set
+                    }
 
                 }
             }
@@ -119,11 +119,14 @@ class SyntaxAnalyzer {
                             searchSymbol = this.firstVT(productionRight[dotPosition + searchIndex]);
                             searchIndex++;
                         }
+                        if (searchSymbol.size == 0) {  // all tokens lead to empty, add front-search symbol
+                            searchSymbol = new Set(dfaNode.searchSymbol[analyzedProductionCount]);
+                        }
                     } else {  // common or alias, final
                         searchSymbol.add(productionRight[dotPosition + 1]);
                     }
                 } else {  // has only 1 token behind dot, e.g. S->S.a, S->S.A
-                    searchSymbol = new Set(dfaNode.searchSymbol[analyzedProductionCount]);
+                    searchSymbol = new Set(dfaNode.searchSymbol[analyzedProductionCount]);  // add front-search symbol
                 }
 
                 // handle closure productions and positions
@@ -436,7 +439,7 @@ class SyntaxAnalyzer {
         var dfaNode = new LR1DFANode(0);
         dfaNode.productionIndex.push(0);
         dfaNode.position.push(0);
-        dfaNode.searchSymbol.push([]);
+        dfaNode.searchSymbol.push(["<HASH>"]);
         // dfaNode = this.closure(dfaNode, 0);
         dfaNode = this.closure(dfaNode);
         this.DFA.push(dfaNode);
@@ -476,7 +479,7 @@ class SyntaxAnalyzer {
                 if (dfaNode.position[j] == tmpProduction["right"].length) {  // dot is at the end
                     // acc
                     if (tmpProduction["left"] == "<S'>" && tmpProduction["right"][0] == "<CODE>" &&
-                        dfaNode.searchSymbol[j].length == 0) {
+                        dfaNode.searchSymbol[j].length == 1 && dfaNode.searchSymbol[j][0] == "<HASH>") {
                         this.ACTION.push({
                             "index": i,
                             "character": "<HASH>",  // '<HASH>' for '#'
