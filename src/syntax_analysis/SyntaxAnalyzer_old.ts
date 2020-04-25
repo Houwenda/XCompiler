@@ -163,6 +163,50 @@ class SyntaxAnalyzer {
         return dfaNode;
     }
 
+    // recursive implementation, not usable due to Maximum call stack size exceeded
+    // closure(dfaNode:LR1DFANode, startIndex:number):LR1DFANode {
+    //     for(var i:number = startIndex; i < dfaNode.productionIndex.length; i++) {
+    //         var productionIndex:number = dfaNode.productionIndex[i];
+    //         var dotPosition = dfaNode.position[i];
+    //         var productionRight = this.promotedProductions[productionIndex]["right"]
+    //         if(dotPosition < productionRight.length &&  // still has token behind dot, e.g. S->.S, S->.Sa
+    //                 tokenType(productionRight[dotPosition]) == "state") {  // not final
+
+    //             // get search symbol by next token
+    //             var searchSymbol:Set<string> = new Set();
+    //             if(dotPosition < productionRight.length - 1) {  // has more than 1 token behind dot, e.g. S->.Sa, S->.SA
+    //                 if(tokenType(productionRight[dotPosition + 1]) == "state") {  // not final
+    //                     searchSymbol = this.firstVT(productionRight[dotPosition + 1]);
+    //                 } else {  // "common" or "alias", final
+    //                     searchSymbol.add(productionRight[dotPosition + 1]);
+    //                 }
+    //             }
+
+    //             // find productions whose left side is productionRight[dotPosition] &
+    //             // add them to dfaNode
+    //             var addCount:number = 0;
+    //             for(var k:number = 0; k < this.promotedProductions.length; k++) {
+    //                 if(dfaNode.productionIndex.indexOf(k) == -1 &&  // remove deuplicated index
+    //                 this.promotedProductions[k]["left"] == productionRight[dotPosition]) {  // left side  
+    //                     dfaNode.productionIndex.push(k);
+    //                     dfaNode.position.push(0);
+    //                     var searchSymbolArray:Array<string> = [];
+    //                     for(var tmpSymbol of searchSymbol) {
+    //                         searchSymbolArray.push(tmpSymbol);
+    //                     }
+    //                     dfaNode.searchSymbol.push(searchSymbolArray);
+    //                     addCount++;
+    //                 }
+    //             }
+    //             if(addCount > 0) {  // new production added, need to search recursively
+    //                 dfaNode = this.closure(dfaNode, i+1);
+    //                 //console.log("TODO: move closure debugging");
+    //             }
+    //         }
+    //     }
+    //     return dfaNode;
+    // }
+
     move(): void {
         while (this.analyzedDFANodeCount < this.DFA.length) {
             var dfaNodeIndex: number = this.analyzedDFANodeCount;
@@ -260,10 +304,135 @@ class SyntaxAnalyzer {
                 }
             }
 
+
+            // debug
+            // console.log("DFA index:", dfaNode.index);
+            // for (var j: number = 0; j < dfaNode.productionIndex.length; j++) {
+            //     var tmpProduction = this.promotedProductions[dfaNode.productionIndex[j]];
+            //     var rightString: string = "";
+            //     for (var k: number = 0; k < tmpProduction["right"].length; k++) {
+            //         if (k == dfaNode.position[j]) {
+            //             rightString += "<DOT> "
+            //         }
+            //         rightString += tmpProduction["right"][k] + " ";
+            //     }
+            //     console.log("production: (" + dfaNode.productionIndex[j] + ") " + tmpProduction["left"] + " -> " + rightString + ",", dfaNode.searchSymbol[j])
+            // }
+            // console.log("next states:", dfaNode.nextState);
+            // console.log()
+
             this.analyzedDFANodeCount++;
             //console.log("analyzedDFANodeCount:", this.analyzedDFANodeCount, "this.DFA.length:", this.DFA.length)//
         }
     }
+
+    // recursive implementation
+    // move(dfaNodeIndex: number): void {
+    //     //console.log("move from:", dfaNodeIndex)//
+    //     var dfaNode: LR1DFANode = this.DFA[dfaNodeIndex];
+    //     for (var i: number = 0; i < dfaNode.productionIndex.length; i++) {
+    //         var productionIndex: number = dfaNode.productionIndex[i];
+    //         var productionRight: Array<string> = this.promotedProductions[productionIndex]["right"];
+    //         var dotPosition: number = dfaNode.position[i];
+    //         if (dotPosition < productionRight.length) {  // still has word behind dot
+
+    //             // handle token when first meeting it
+    //             // if appeared before, ignore it
+    //             // when it first appears, add all productions to new node
+    //             //
+    //             // e.g. A->Bc (handle all productions immediately), A->Bd (ignore), A->Be (ignore)
+    //             // use move-in token "B" to handle these three productions when looping through the node
+    //             var moveInTokens: Array<string> = [];
+    //             // get all move-in token of the DFA node, "" if unable to move
+    //             for (var j = 0; j < dfaNode.productionIndex.length; j++) {
+    //                 var tmpProductionIndex: number = dfaNode.productionIndex[j];
+    //                 var tmpProductionRight: Array<string> = this.promotedProductions[tmpProductionIndex]["right"];
+    //                 var tmpDotPosition: number = dfaNode.position[j];
+    //                 if (tmpDotPosition < tmpProductionRight.length) {
+    //                     moveInTokens.push(tmpProductionRight[tmpDotPosition]);
+    //                 } else {
+    //                     moveInTokens.push("");
+    //                 }
+    //             }
+    //             //console.log("moveInTokens:", moveInTokens);
+
+    //             if (moveInTokens.indexOf(productionRight[dotPosition]) == i) {  // move-in token first appears
+    //                 // create new DFA node (& add to this.DFA)
+    //                 var newNodeIndex: number = this.DFA.length;
+    //                 var newNode: LR1DFANode = new LR1DFANode(newNodeIndex);
+
+    //                 // add productions 
+    //                 for (var j = i; j < dfaNode.productionIndex.length; j++) {
+    //                     // handle productions that share the same move-in token
+    //                     if (productionRight[dotPosition] == moveInTokens[j]) {
+    //                         newNode.productionIndex.push(dfaNode.productionIndex[j]);
+    //                         newNode.position.push(dfaNode.position[j] + 1);
+    //                         newNode.searchSymbol.push(dfaNode.searchSymbol[j]);
+    //                     }
+    //                 }
+    //                 //newNode = this.closure(newNode, 0);
+    //                 newNode = this.closure(newNode);
+
+    //                 // add link (& node)
+    //                 // check if node already exists in this.DFA
+    //                 var findIndex: number = -1;
+    //                 for (var j: number = 0; j < this.DFA.length; j++) {
+    //                     var tmpNode: any = this.DFA[j];
+    //                     // have same number of productions
+    //                     if (tmpNode.productionIndex.length == newNode.productionIndex.length) {
+    //                         // check each production & search symbol & position
+    //                         var isMatched: boolean = true;
+    //                         for (var k: number = 0; k < tmpNode.productionIndex.length; k++) {
+    //                             var tmpIndex = newNode.productionIndex.indexOf(tmpNode.productionIndex[k]);
+    //                             if (tmpIndex == -1) {  // productions do not match
+    //                                 isMatched = false;
+    //                                 break;
+    //                             } else if (newNode.position[tmpIndex] != tmpNode.position[k] ||  // can find the production, but positions do not match
+    //                                 newNode.searchSymbol[tmpIndex] != tmpNode.searchSymbol[k]) {  // searchSymbols do not match
+    //                                 isMatched = false;
+    //                                 break;
+    //                             }
+    //                         }
+    //                         if (isMatched) {  // already in DFA list
+    //                             findIndex = j;
+    //                             break;
+    //                         }
+    //                     }
+
+    //                     // var tmp = this.DFA[j];
+    //                     // if(tmp.productionIndex.sort().toString() == newNode.productionIndex.sort().toString() && 
+    //                     //         tmp.position.sort().toString() == newNode.position.sort().toString() && 
+    //                     //         tmp.searchSymbol.sort().toString() == newNode.searchSymbol.sort().toString()) {
+    //                     //     findIndex = j;  // already in DFA list
+    //                     //     break;
+    //                     // }
+    //                 }
+    //                 if (findIndex == -1) {  // need to add new node
+    //                     // add node
+    //                     this.DFA.push(newNode);
+    //                     // add to nextState
+    //                     this.DFA[dfaNodeIndex].nextState.push({
+    //                         "character": productionRight[dotPosition],
+    //                         "index": newNodeIndex
+    //                     });
+    //                     // move recursively
+    //                     this.move(newNodeIndex);
+    //                 } else {  // already in DFA list
+    //                     this.DFA[dfaNodeIndex].nextState.push({
+    //                         "character": productionRight[dotPosition],
+    //                         "index": findIndex
+    //                     });
+    //                     console.log("already in DFA list:", findIndex)//
+    //                 }
+
+    //             } else {  // handled before, ignore
+    //                 //console.log("ignore")
+    //             }
+
+    //         }
+    //     }
+
+    // }
 
     createDFA(): void {
         // create first DFA node
