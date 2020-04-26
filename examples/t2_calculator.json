@@ -5,48 +5,23 @@
             {
                 "left": "<CODE>",
                 "right": "<X> + <CODE>"
-            }
-        ]
-    },
-    {
-        "description": "test",
-        "contents": [
+            },
             {
                 "left": "<CODE>",
                 "right": "<X> - <CODE>"
-            }
-        ]
-    },
-    {
-        "description": "test",
-        "contents": [
+            },
             {
                 "left": "<X>",
                 "right": "<N> * <X>"
-            }
-        ]
-    },
-    {
-        "description": "test",
-        "contents": [
+            },
             {
                 "left": "<X>",
                 "right": "<N> / <X>"
-            }
-        ]
-    },
-    {
-        "description": "test",
-        "contents": [
+            },
             {
                 "left": "<N>",
                 "right": "1"
-            }
-        ]
-    },
-    {
-        "description": "test",
-        "contents": [
+            },
             {
                 "left": "<N>",
                 "right": "<empty>"

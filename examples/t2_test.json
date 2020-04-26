@@ -1,46 +1,170 @@
 [
     {
-        "description":"test",
-        "contents":[
+        "description": "test",
+        "contents": [
             {
-                "left":"<CODE>",
-                "right":"a <A> d"
+                "left": "<CODE>",
+                "right": "<BLOCK>"
+            },
+            {
+                "left": "<BLOCK>",
+                "right": "<STAT> <BLOCK>"
+            },
+            {
+                "left": "<BLOCK>",
+                "right": "<empty>"
+            },
+            {
+                "left": "<STAT>",
+                "right": "while <EXP> do <BLOCK> end"
             }
         ]
     },
     {
-        "description":"test",
-        "contents":[
+        "description": "expression",
+        "contents": [
             {
-                "left":"<CODE>",
-                "right":"b <A> c"
+                "left": "<EXP>",
+                "right": "nil"
+            },
+            {
+                "left": "<EXP>",
+                "right": "true"
+            },
+            {
+                "left": "<EXP>",
+                "right": "false"
+            },
+            {
+                "left": "<EXP>",
+                "right": "<constant>"
+            },
+            {
+                "left": "<EXP>",
+                "right": "<EXP> <BINOP> <EXP>"
+            },
+            {
+                "left": "<EXP>",
+                "right": "<PREFIXEXP>"
             }
         ]
     },
     {
-        "description":"test",
-        "contents":[
+        "description": "prefix expression",
+        "contents": [
             {
-                "left":"<CODE>",
-                "right":"a e c"
+                "left": "<PREFIXEXP>",
+                "right": "<VAR>"
+            },
+            {
+                "left": "<PREFIXEXP>",
+                "right": "( <EXP> )"
             }
         ]
     },
     {
-        "description":"test",
-        "contents":[
+        "description": "variable",
+        "contents": [
             {
-                "left":"<CODE>",
-                "right":"b e d"
+                "left": "<VAR>",
+                "right": "<identifier>"
+            },
+            {
+                "left": "<VAR>",
+                "right": "<PREFIXEXP> [ <EXP> ]"
+            },
+            {
+                "left": "<VAR>",
+                "right": "<PREFIXEXP> . <identifier>"
             }
         ]
     },
     {
-        "description":"test",
-        "contents":[
+        "description": "binocular operator",
+        "contents": [
             {
-                "left":"<A>",
-                "right":"e"
+                "left": "<BINOP>",
+                "right": "+"
+            },
+            {
+                "left": "<BINOP>",
+                "right": "-"
+            },
+            {
+                "left": "<BINOP>",
+                "right": "*"
+            },
+            {
+                "left": "<BINOP>",
+                "right": "/"
+            },
+            {
+                "left": "<BINOP>",
+                "right": "//"
+            },
+            {
+                "left": "<BINOP>",
+                "right": "%"
+            },
+            {
+                "left": "<BINOP>",
+                "right": "^"
+            },
+            {
+                "left": "<BINOP>",
+                "right": "&"
+            },
+            {
+                "left": "<BINOP>",
+                "right": "|"
+            },
+            {
+                "left": "<BINOP>",
+                "right": "~"
+            },
+            {
+                "left": "<BINOP>",
+                "right": ">>"
+            },
+            {
+                "left": "<BINOP>",
+                "right": "<<"
+            },
+            {
+                "left": "<BINOP>",
+                "right": ".."
+            },
+            {
+                "left": "<BINOP>",
+                "right": "<"
+            },
+            {
+                "left": "<BINOP>",
+                "right": "<="
+            },
+            {
+                "left": "<BINOP>",
+                "right": ">"
+            },
+            {
+                "left": "<BINOP>",
+                "right": ">="
+            },
+            {
+                "left": "<BINOP>",
+                "right": "=="
+            },
+            {
+                "left": "<BINOP>",
+                "right": "~="
+            },
+            {
+                "left": "<BINOP>",
+                "right": "and"
+            },
+            {
+                "left": "<BINOP>",
+                "right": "or"
             }
         ]
     }

@@ -60,3 +60,8 @@ tsc --build src/tsconfig.json
 cd src/build
 node index.js -s --pl ../../examples/t3_grammar.json --ps ../../examples/t2_grammar.json -c ../../examples/code.txt > debug.txt
 ```
+
+```
+测试
+node index.js -s --pl ../../examples/t3_grammar.json --ps ../../examples/t2_grammar.json -c ../../examples/code1.txt  > debug.txt
+```

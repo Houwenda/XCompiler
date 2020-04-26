@@ -17,7 +17,7 @@
             },
             {
                 "left": "<BLOCK>",
-                "right": "<RETSTAT> <BLOCK>"
+                "right": "<RETSTAT>"
             },
             {
                 "left": "<BLOCK>",

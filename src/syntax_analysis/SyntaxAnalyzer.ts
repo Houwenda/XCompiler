@@ -94,6 +94,63 @@ class SyntaxAnalyzer {
         return result;
     }
 
+    createFIRST1(): void {
+        for (var production of this.promotedProductions) {  // initialize
+            this.FIRST[production["left"]] = [];
+        }
+        var canExpand: boolean = true;
+        //console.log(this.FIRST)//
+        while (canExpand) {
+            //console.log(this.FIRST);
+            canExpand = false;
+            for (var production of this.promotedProductions) {
+                if (production["right"].length != 0) {  // not -><empty>
+                    if (tokenType(production["right"][0]) == "state") {  // not final
+                        //handle self looping, e.g. <FUNCTION_BLOCK_CLOSURE>-><FUNCTION_BLOCK_CLOSURE>
+                        if(production["right"][0] == production["left"]) {  
+                            continue;
+                        }
+                        for (var i: number = 0; i < production["right"].length; i++) {  // handle states that can lead to empty
+                            if (tokenType(production["right"][i]) == "state") {  // not final
+                                // [] if not calculated, ["<HASH>", ...] if leads to <empty>
+                                if (this.FIRST[production["right"][i]].length != 0) {
+                                    for(var tmpSearchSymbol of this.FIRST[production["right"][i]]) {
+                                        if(tmpSearchSymbol != "<HASH>" &&   // ignore <empty>, continue adding
+                                        this.FIRST[production["left"]].indexOf(tmpSearchSymbol) == -1) {
+                                            this.FIRST[production["left"]].push(tmpSearchSymbol);
+                                            canExpand = true;
+                                        }
+                                    }
+                                    // cannot lead to <empty>, no need to continue
+                                    if (this.FIRST[production["right"][i]].indexOf("<HASH>") == -1) {  
+                                        break;
+                                    }
+                                } else {  // not calculated yet, calculate next round
+                                    break;
+                                }
+                            } else if (this.FIRST[production["left"]].indexOf(production["right"][i]) == -1) {  // final
+                                this.FIRST[production["left"]].push(production["right"][i]);
+                                canExpand = true;
+                                break;
+                            }
+                        }
+                    } else {  // common or alias, final
+                        if (this.FIRST[production["left"]].indexOf(production["right"][0]) == -1) {
+                            this.FIRST[production["left"]].push(production["right"][0]);
+                            canExpand = true;
+                        }
+                    }
+                } else {  // -><empty> has been changed to ->
+                    if (this.FIRST[production["left"]].indexOf("<HASH>") == -1) {
+                        this.FIRST[production["left"]].push("<HASH>");
+                        canExpand = true;
+                    }
+                }
+            }
+        }
+    }
+
+
     // create FIRST set of productions
     createFIRST(): void {
         for (var production of this.promotedProductions) {
@@ -358,7 +415,8 @@ class SyntaxAnalyzer {
         }
 
         console.log("create FIRST set");
-        this.createFIRST();
+        //this.createFIRST();
+        this.createFIRST1();
         console.log(this.FIRST)//
 
         console.log("production -> DFA");

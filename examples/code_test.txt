@@ -1,5 +1,2 @@
-function main(a, b)
-    test(a)
-    b = a
-    return b
+while(_value123 >= 0) do
 end
