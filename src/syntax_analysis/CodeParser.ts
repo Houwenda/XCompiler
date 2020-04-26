@@ -124,7 +124,10 @@ class CodeParser {
                 console.log("accept!");
                 analyzedTokenCount++;  // skip <HASH> added to token stream
                 if (analyzedTokenCount < tokenStream.length) {
-                    console.log("input string not empty, there are symbols after analysis.");
+                    console.log("input string not empty, there are symbols after analysis:");
+                    for(var i:number = analyzedTokenCount; i < tokenStream.length; i++) {
+                        console.log(tokenStream[i]);
+                    }
                 }
                 return;
             } else {

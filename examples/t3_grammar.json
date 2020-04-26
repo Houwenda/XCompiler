@@ -220,32 +220,33 @@
                     "B-><digit>C",
                     "C-><digit>C",
                     "C->D",
-                    "C-><.>E",
-                    "D->F",
-                    "F-><empty>",
-                    "E-><digit>G",
+                    "C-><.>F",
+                    "D->E",
+                    "E-><empty>",
+                    "F-><digit>G",
                     "D-><E>H",
-                    "F-><+>I",
-                    "F-><->I",
-                    "I-><i>",
                     "G-><digit>G",
                     "G->D",
+                    "E-><+>I",
+                    "E-><->I",
                     "H-><+>J",
                     "H-><->J",
-                    "I-><digit>K",
                     "J-><digit>L",
-                    "K-><digit>K",
+                    "I->K",
                     "K-><i>",
                     "L-><digit>L",
-                    "L->F",
-                    "K-><.>M",
+                    "I-><digit>M",
+                    "L->E",
+                    "M-><digit>M",
                     "L-><.>N",
-                    "M-><digit>O",
-                    "M-><digit>P",
+                    "M->K",
+                    "N-><digit>O",
+                    "M-><.>P",
                     "O-><digit>O",
-                    "O-><i>",
-                    "P-><digit>P",
-                    "P->F"
+                    "O->E",
+                    "P-><digit>Q",
+                    "Q-><digit>Q",
+                    "Q->K"
                 ]
             },
             {
@@ -275,9 +276,9 @@
                 ]
             },
             {
-                "description": "!",
+                "description": "~",
                 "production": [
-                    "A-><!>"
+                    "A-><~>"
                 ]
             },
             {
@@ -311,38 +312,49 @@
                 ]
             },
             {
-                "description": "+=",
+                "description": "&",
                 "production": [
-                    "A-><+>B",
-                    "B-><=>"
+                    "A-><&>"
                 ]
             },
             {
-                "description": "-=",
+                "description": "|",
                 "production": [
-                    "A-><->B",
-                    "B-><=>"
+                    "A-><|>"
                 ]
             },
             {
-                "description": "*=",
+                "description": "^",
                 "production": [
-                    "A-><*>B",
-                    "B-><=>"
+                    "A-><^>"
                 ]
             },
             {
-                "description": "/=",
+                "description": "//",
                 "production": [
                     "A-></>B",
-                    "B-><=>"
+                    "B-></>"
                 ]
             },
             {
-                "description": "%=",
+                "description": "<<",
                 "production": [
-                    "A-><%>B",
-                    "B-><=>"
+                    "A-><<>B",
+                    "B-><<>"
+                ]
+            },
+            {
+                "description": ">>",
+                "production": [
+                    "A-><>>B",
+                    "B-><>>"
+                ]
+            },
+            {
+                "description": "..",
+                "production": [
+                    "A-><.>B",
+                    "B-><.>"
                 ]
             },
             {
@@ -376,7 +388,7 @@
                 ]
             },
             {
-                "description": "!=",
+                "description": "~=",
                 "production": [
                     "A-><!>B",
                     "B-><=>"

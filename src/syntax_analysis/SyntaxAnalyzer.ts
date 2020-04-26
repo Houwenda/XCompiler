@@ -57,7 +57,8 @@ class SyntaxAnalyzer {
     }
 
     // get FIRST set of given state
-    firstVT(stateName: string): Set<string> {
+    firstVT(stateName: string, searchState: Array<string>): Set<string> {
+        //console.log("creating FIRST of", stateName)//
         // already calculated
         if (this.FIRST[stateName] != null) {
             return this.FIRST[stateName];
@@ -72,9 +73,11 @@ class SyntaxAnalyzer {
         for (var i: number = 0; i < this.promotedProductions.length; i++) {
             if (this.promotedProductions[i]["left"] == stateName) {  // left match
                 if (tokenType(this.promotedProductions[i]["right"][0]) == "state" &&  // not final
-                    this.promotedProductions[i]["right"][0] != stateName) {  // handle self looping, e.g. <FUNCTION_BLOCK_CLOSURE>-><FUNCTION_BLOCK_CLOSURE>
+                    this.promotedProductions[i]["right"][0] != stateName &&  // handle self looping, e.g. <FUNCTION_BLOCK_CLOSURE>-><FUNCTION_BLOCK_CLOSURE>
+                    searchState.indexOf(this.promotedProductions[i]["right"][0]) == -1) {  // handle closed loop
                     // search recursively
-                    var tmpResult: Set<string> = this.firstVT(this.promotedProductions[i]["right"][0]);
+                    searchState.push(this.promotedProductions[i]["right"][0]);
+                    var tmpResult: Set<string> = this.firstVT(this.promotedProductions[i]["right"][0], searchState);
                     for (var tmp of tmpResult) {
                         result.add(tmp);
                     }
@@ -96,7 +99,7 @@ class SyntaxAnalyzer {
         for (var production of this.promotedProductions) {
             for (var tmp of production["right"]) {
                 if (tokenType(tmp) == "state" && this.FIRST.indexOf(tmp) == -1) {  // not final, remove duplicated
-                    this.FIRST[tmp] = this.firstVT(tmp);
+                    this.FIRST[tmp] = this.firstVT(tmp, []);
                 }
             }
         }
@@ -116,7 +119,7 @@ class SyntaxAnalyzer {
                     if (tokenType(productionRight[dotPosition + 1]) == "state") {  // not final
                         var searchIndex: number = 1;
                         while (searchSymbol.size == 0 && dotPosition + searchIndex < productionRight.length) {
-                            searchSymbol = this.firstVT(productionRight[dotPosition + searchIndex]);
+                            searchSymbol = this.firstVT(productionRight[dotPosition + searchIndex], []);
                             searchIndex++;
                         }
                         if (searchSymbol.size == 0) {  // all tokens lead to empty, add front-search symbol

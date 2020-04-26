@@ -1,0 +1,5 @@
+_v4riab1e = -1.5E+1.5
+test_func = function(a,b) print(a,b) end
+test_list = {[0]=0, _v4riab1e = 1; 2}
+test_string = "abcd1234\"'\r\n" .. 'abcd1234\'"\r\n'
+test_func(test_string, 1234)
