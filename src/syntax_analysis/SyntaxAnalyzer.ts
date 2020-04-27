@@ -107,22 +107,22 @@ class SyntaxAnalyzer {
                 if (production["right"].length != 0) {  // not -><empty>
                     if (tokenType(production["right"][0]) == "state") {  // not final
                         //handle self looping, e.g. <FUNCTION_BLOCK_CLOSURE>-><FUNCTION_BLOCK_CLOSURE>
-                        if(production["right"][0] == production["left"]) {  
+                        if (production["right"][0] == production["left"]) {
                             continue;
                         }
                         for (var i: number = 0; i < production["right"].length; i++) {  // handle states that can lead to empty
                             if (tokenType(production["right"][i]) == "state") {  // not final
                                 // [] if not calculated, ["<HASH>", ...] if leads to <empty>
                                 if (this.FIRST[production["right"][i]].length != 0) {
-                                    for(var tmpSearchSymbol of this.FIRST[production["right"][i]]) {
-                                        if(tmpSearchSymbol != "<HASH>" &&   // ignore <empty>, continue adding
-                                        this.FIRST[production["left"]].indexOf(tmpSearchSymbol) == -1) {
+                                    for (var tmpSearchSymbol of this.FIRST[production["right"][i]]) {
+                                        if (tmpSearchSymbol != "<HASH>" &&   // ignore <empty>, continue adding
+                                            this.FIRST[production["left"]].indexOf(tmpSearchSymbol) == -1) {
                                             this.FIRST[production["left"]].push(tmpSearchSymbol);
                                             canExpand = true;
                                         }
                                     }
                                     // cannot lead to <empty>, no need to continue
-                                    if (this.FIRST[production["right"][i]].indexOf("<HASH>") == -1) {  
+                                    if (this.FIRST[production["right"][i]].indexOf("<HASH>") == -1) {
                                         break;
                                     }
                                 } else {  // not calculated yet, calculate next round
@@ -172,22 +172,57 @@ class SyntaxAnalyzer {
                 tokenType(productionRight[dotPosition]) == "state") {  // not final
                 // handle search symbol
                 var searchSymbol: Set<string> = new Set();
-                if (dotPosition < productionRight.length - 1) {  // has more than 1 token behind dot, e.g. S->.Sa, S->.SA
-                    if (tokenType(productionRight[dotPosition + 1]) == "state") {  // not final
-                        var searchIndex: number = 1;
-                        while (searchSymbol.size == 0 && dotPosition + searchIndex < productionRight.length) {
-                            searchSymbol = this.firstVT(productionRight[dotPosition + searchIndex], []);
-                            searchIndex++;
+                var searchIndex: number = 1;
+                var canEmptyCount: number = 0;
+                while (dotPosition + searchIndex < productionRight.length) {
+                    if (tokenType(productionRight[dotPosition + searchIndex]) == "state") {  // not final
+                        var canEmpty: boolean = false;
+                        for (var tmpState of this.FIRST[productionRight[dotPosition + searchIndex]]) {
+                            if (tmpState != "<HASH>") {
+                                searchSymbol.add(tmpState);
+                            } else {
+                                canEmpty = true;
+                                canEmptyCount++;
+                            }
                         }
-                        if (searchSymbol.size == 0) {  // all tokens lead to empty, add front-search symbol
-                            searchSymbol = new Set(dfaNode.searchSymbol[analyzedProductionCount]);
+                        if (!canEmpty) {  // this state cannot lead to <empty>, no need to continue searching
+                            break;
                         }
-                    } else {  // common or alias, final
-                        searchSymbol.add(productionRight[dotPosition + 1]);
+                    } else {  // final
+                        // no need to continue searching
+                        searchSymbol.add(productionRight[dotPosition + searchIndex]);
+                        break;
                     }
-                } else {  // has only 1 token behind dot, e.g. S->S.a, S->S.A
-                    searchSymbol = new Set(dfaNode.searchSymbol[analyzedProductionCount]);  // add front-search symbol
+                    searchIndex++;
                 }
+                // all states behind <dot> can lead to <empty> or
+                // has only 1 token behind <dot>
+                if (canEmptyCount + 1 == productionRight.length - dotPosition) {
+                    // add search symbols of current node production
+                    for (var tmp of dfaNode.searchSymbol[analyzedProductionCount]) {
+                        searchSymbol.add(tmp);
+                    }
+                }
+                // if (dotPosition < productionRight.length - 1) {  // has more than 1 token behind dot, e.g. S->.Sa, S->.SA
+                //     if (tokenType(productionRight[dotPosition + 1]) == "state") {  // not final
+                //         var searchIndex: number = 1;
+                //         while (searchSymbol.size == 0 && dotPosition + searchIndex < productionRight.length) {
+                //             searchSymbol = this.firstVT(productionRight[dotPosition + searchIndex], []);
+                //             searchIndex++;
+                //         }
+                //         if (searchSymbol.size == 0) {  // all tokens lead to empty, add front-search symbol
+                //             searchSymbol = new Set(dfaNode.searchSymbol[analyzedProductionCount]);
+                //         }
+                //     } else {  // common or alias, final
+                //         searchSymbol.add(productionRight[dotPosition + 1]);
+                //     }
+                // } else {  // has only 1 token behind dot, e.g. S->S.a, S->S.A
+                //     searchSymbol = new Set(dfaNode.searchSymbol[analyzedProductionCount]);  // add front-search symbol
+                // }
+
+                // if(dfaNode.index == 9) {  // debug
+                //     console.log("!!! creating search symbol for dfa 9:", this.promotedProductions[productionIndex], dotPosition, searchSymbol);
+                // }
 
                 // handle closure productions and positions
                 for (var i: number = 0; i < this.promotedProductions.length; i++) {
@@ -196,11 +231,18 @@ class SyntaxAnalyzer {
                         // combine multiple search symbols into former newNode production, e.g. S->a.B,a S->a.B,b => S->a.B, a/b
                         var canCombine: boolean = false;
                         for (var k: number = 0; k < dfaNode.productionIndex.length; k++) {
-                            if (dfaNode.productionIndex[k] == i && dfaNode.position[k] == 0) {
+                            if (dfaNode.productionIndex[k] == i && dfaNode.position[k] == 0) {  // same production, same position
                                 canCombine = true;
                                 for (var tmpSymbol of searchSymbol) {
-                                    dfaNode.searchSymbol[k].push(tmpSymbol);
+                                    if (dfaNode.searchSymbol[k].indexOf(tmpSymbol) == -1) {  // remove duplicate
+                                        dfaNode.searchSymbol[k].push(tmpSymbol);
+                                    }
                                 }
+
+                                // if(dfaNode.index == 9) {  //debug
+                                //     console.log("!!! combine searchSymbol:", dfaNode.searchSymbol[k]);
+                                // }
+
                                 break;
                             }
                         }
@@ -212,11 +254,33 @@ class SyntaxAnalyzer {
                                 searchSymbolArray.push(tmpSymbol);
                             }
                             dfaNode.searchSymbol.push(searchSymbolArray);
+
+                            // if(dfaNode.index == 9) {  //debug
+                            //     console.log("!!! create new production:", this.promotedProductions[i], searchSymbolArray);
+                            // }
                         }
 
                     }
                 }
             }
+
+            if (dfaNode.index == 9) {  // debug
+                console.log("!!!", dfaNode.productionIndex[analyzedProductionCount]);
+                for (var j in dfaNode.productionIndex) {
+                    var tmpProduction = this.promotedProductions[dfaNode.productionIndex[j]];
+                    var rightString: string = "";
+                    for (var tmpNum:number = 0; tmpNum < tmpProduction["right"].length; tmpNum++) {
+                        if (tmpNum == dfaNode.position[j]) {
+                            rightString += "<DOT> "
+                        }
+                        rightString += tmpProduction["right"][tmpNum] + " ";
+                    }
+                    console.log("production: (" + dfaNode.productionIndex[j] + ") " + tmpProduction["left"] + " -> " + rightString + ",", dfaNode.searchSymbol[j])
+                }
+            }
+            
+
+
             analyzedProductionCount++;
         }
 

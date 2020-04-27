@@ -75,19 +75,65 @@
         ]
     },
     {
-        "description": "name list",
+        "description": "branch sentences",
         "contents": [
             {
-                "left": "<IDENTIFIER_LIST>",
-                "right": "<identifier> <IDENTIFIER_CLOSURE>"
+                "left": "<BRANCH>",
+                "right": "if <EXP> then <BLOCK> <ELSE_IF> <ELSE> end"
             },
             {
-                "left": "<IDENTIFIER_CLOSURE>",
-                "right": ", <identifier>"
+                "left": "<ELSE_IF>",
+                "right": "elseif <EXP> then <BLOCK> <ELSE_IF>"
             },
             {
-                "left": "<IDENTIFIER_CLOSURE>",
+                "left": "<ELSE_IF>",
                 "right": "<empty>"
+            },
+            {
+                "left": "<ELSE>",
+                "right": "else <BLOCK>"
+            },
+            {
+                "left": "<ELSE>",
+                "right": "<empty>"
+            }
+        ]
+    },
+    {
+        "description": "for loop",
+        "contents": [
+            {
+                "left": "<FOR_LOOP>",
+                "right": "for <identifier> = <EXP> , <EXP> , <EXP> do <BLOCK> end"
+            },
+            {
+                "left": "<FOR_LOOP>",
+                "right": "for <identifier> = <EXP> , <EXP> do <BLOCK> end"
+            },
+            {
+                "left": "<FOR_LOOP>",
+                "right": "for <IDENTIFIER_LIST> in <EXPLIST> do <BLOCK> end"
+            }
+        ]
+    },
+    {
+        "description": "return stats",
+        "contents": [
+            {
+                "left": "<RETSTAT>",
+                "right": "return"
+            },
+            {
+                "left": "<RETSTAT>",
+                "right": "return <EXPLIST>"
+            },
+            {
+                "left": "<RETSTAT>",
+                "right": "return ;"
+            },
+            {
+                "left": "<RETSTAT>",
+                "right": "return <EXPLIST> ;"
             }
         ]
     },
@@ -113,74 +159,132 @@
         ]
     },
     {
-        "description": "function body",
+        "description": "variable list",
         "contents": [
             {
-                "left": "<FUNCBODY>",
-                "right": "( ) <BLOCK> end"
+                "left": "<VARLIST>",
+                "right": "<VAR> <VAR_CLOSURE>"
             },
             {
-                "left": "<FUNCBODY>",
-                "right": "( <PARLIST> ) <BLOCK> end"
+                "left": "<VAR_CLOSURE>",
+                "right": ", <VAR>"
+            },
+            {
+                "left": "<VAR_CLOSURE>",
+                "right": "<empty>"
             }
         ]
     },
     {
-        "description": "parameter list",
+        "description": "variable",
         "contents": [
             {
-                "left": "<PARLIST>",
-                "right": "<IDENTIFIER_LIST>"
+                "left": "<VAR>",
+                "right": "<identifier>"
             },
             {
-                "left": "<PARLIST>",
-                "right": "<IDENTIFIER_LIST> , ..."
+                "left": "<VAR>",
+                "right": "<PREFIXEXP> [ <EXP> ]"
             },
             {
-                "left": "<PARLIST>",
+                "left": "<VAR>",
+                "right": "<PREFIXEXP> . <identifier>"
+            }
+        ]
+    },
+    {
+        "description": "name list",
+        "contents": [
+            {
+                "left": "<IDENTIFIER_LIST>",
+                "right": "<identifier> <IDENTIFIER_CLOSURE>"
+            },
+            {
+                "left": "<IDENTIFIER_CLOSURE>",
+                "right": ", <identifier>"
+            },
+            {
+                "left": "<IDENTIFIER_CLOSURE>",
+                "right": "<empty>"
+            }
+        ]
+    },
+    {
+        "description": "expression list",
+        "contents": [
+            {
+                "left": "<EXPLIST>",
+                "right": "<EXP> <EXP_CLOSURE>"
+            },
+            {
+                "left": "<EXP_CLOSURE>",
+                "right": ", <EXP>"
+            },
+            {
+                "left": "<EXP_CLOSURE>",
+                "right": "<empty>"
+            }
+        ]
+    },
+    {
+        "description": "expression",
+        "contents": [
+            {
+                "left": "<EXP>",
+                "right": "nil"
+            },
+            {
+                "left": "<EXP>",
+                "right": "true"
+            },
+            {
+                "left": "<EXP>",
+                "right": "false"
+            },
+            {
+                "left": "<EXP>",
+                "right": "<constant>"
+            },
+            {
+                "left": "<EXP>",
                 "right": "..."
+            },
+            {
+                "left": "<EXP>",
+                "right": "<FUNCTIONDEF>"
+            },
+            {
+                "left": "<EXP>",
+                "right": "<PREFIXEXP>"
+            },
+            {
+                "left": "<EXP>",
+                "right": "<TABLECONSTRUCTOR>"
+            },
+            {
+                "left": "<EXP>",
+                "right": "<EXP> <BINOP> <EXP>"
+            },
+            {
+                "left": "<EXP>",
+                "right": "<UNOP> <EXP>"
             }
         ]
     },
     {
-        "description": "for loop",
+        "description": "prefix expression",
         "contents": [
             {
-                "left": "<FOR_LOOP>",
-                "right": "for <identifier> = <EXP> , <EXP> , <EXP> do <BLOCK> end"
+                "left": "<PREFIXEXP>",
+                "right": "<VAR>"
             },
             {
-                "left": "<FOR_LOOP>",
-                "right": "for <identifier> = <EXP> , <EXP> do <BLOCK> end"
+                "left": "<PREFIXEXP>",
+                "right": "<FUNCTIONCALL>"
             },
             {
-                "left": "<FOR_LOOP>",
-                "right": "for <IDENTIFIER_LIST> in <EXPLIST> do <BLOCK> end"
-            }
-        ]
-    },
-    {
-        "description": "branch sentences",
-        "contents": [
-            {
-                "left": "<BRANCH>",
-                "right": "if <EXP> then <BLOCK> <ELSE_IF> <ELSE> end"
-            },
-            {
-                "left": "<ELSE_IF>",
-                "right": "elseif <EXP> then <BLOCK> <ELSE_IF>"
-            },
-            {
-                "left": "<ELSE_IF>",
-                "right": "<empty>"
-            },
-            {
-                "left": "<ELSE>",
-                "right": "else <BLOCK>"
-            },
-            {
-                "left": "<ELSE>",
-                "right": "<empty>"
+                "left": "<PREFIXEXP>",
+                "right": "( <EXP> )"
             }
         ]
     },
@@ -211,6 +315,45 @@
             {
                 "left": "<ARGS>",
                 "right": "<TABLECONSTRUCTOR>"
+            }
+        ]
+    },
+    {
+        "description": "function definition",
+        "contents": [
+            {
+                "left": "<FUNCTIONDEF>",
+                "right": "function <FUNCBODY>"
+            }
+        ]
+    },
+    {
+        "description": "function body",
+        "contents": [
+            {
+                "left": "<FUNCBODY>",
+                "right": "( ) <BLOCK> end"
+            },
+            {
+                "left": "<FUNCBODY>",
+                "right": "( <PARLIST> ) <BLOCK> end"
+            }
+        ]
+    },
+    {
+        "description": "parameter list",
+        "contents": [
+            {
+                "left": "<PARLIST>",
+                "right": "<IDENTIFIER_LIST>"
+            },
+            {
+                "left": "<PARLIST>",
+                "right": "<IDENTIFIER_LIST> , ..."
+            },
+            {
+                "left": "<PARLIST>",
+                "right": "..."
             }
         ]
     },
@@ -275,145 +418,6 @@
             {
                 "left": "<FIELDSEP>",
                 "right": ";"
-            }
-        ]
-    },
-    {
-        "description": "variable list",
-        "contents": [
-            {
-                "left": "<VARLIST>",
-                "right": "<VAR> <VAR_CLOSURE>"
-            },
-            {
-                "left": "<VAR_CLOSURE>",
-                "right": ", <VAR>"
-            },
-            {
-                "left": "<VAR_CLOSURE>",
-                "right": "<empty>"
-            }
-        ]
-    },
-    {
-        "description": "expression list",
-        "contents": [
-            {
-                "left": "<EXPLIST>",
-                "right": "<EXP> <EXP_CLOSURE>"
-            },
-            {
-                "left": "<EXP_CLOSURE>",
-                "right": ", <EXP>"
-            },
-            {
-                "left": "<EXP_CLOSURE>",
-                "right": "<empty>"
-            }
-        ]
-    },
-    {
-        "description": "expression",
-        "contents": [
-            {
-                "left": "<EXP>",
-                "right": "nil"
-            },
-            {
-                "left": "<EXP>",
-                "right": "true"
-            },
-            {
-                "left": "<EXP>",
-                "right": "false"
-            },
-            {
-                "left": "<EXP>",
-                "right": "<constant>"
-            },
-            {
-                "left": "<EXP>",
-                "right": "..."
-            },
-            {
-                "left": "<EXP>",
-                "right": "<EXP> <BINOP> <EXP>"
-            },
-            {
-                "left": "<EXP>",
-                "right": "<UNOP> <EXP>"
-            },
-            {
-                "left": "<EXP>",
-                "right": "<PREFIXEXP>"
-            },
-            {
-                "left": "<EXP>",
-                "right": "<TABLECONSTRUCTOR>"
-            },
-            {
-                "left": "<EXP>",
-                "right": "<FUNCTIONDEF>"
-            }
-        ]
-    },
-    {
-        "description": "function definition",
-        "contents": [
-            {
-                "left": "<FUNCTIONDEF>",
-                "right": "function <FUNCBODY>"
-            }
-        ]
-    },
-    {
-        "description": "negative operator",
-        "contents": [
-            {
-                "left": "<UNOP>",
-                "right": "-"
-            },
-            {
-                "left": "<UNOP>",
-                "right": "not"
-            },
-            {
-                "left": "<UNOP>",
-                "right": "~"
-            }
-        ]
-    },
-    {
-        "description": "prefix expression",
-        "contents": [
-            {
-                "left": "<PREFIXEXP>",
-                "right": "<VAR>"
-            },
-            {
-                "left": "<PREFIXEXP>",
-                "right": "<FUNCTIONCALL>"
-            },
-            {
-                "left": "<PREFIXEXP>",
-                "right": "( <EXP> )"
-            }
-        ]
-    },
-    {
-        "description": "variable",
-        "contents": [
-            {
-                "left": "<VAR>",
-                "right": "<identifier>"
-            },
-            {
-                "left": "<VAR>",
-                "right": "<PREFIXEXP> [ <EXP> ]"
-            },
-            {
-                "left": "<VAR>",
-                "right": "<PREFIXEXP> . <identifier>"
             }
         ]
     },
@@ -507,23 +511,19 @@
         ]
     },
     {
-        "description": "return stats",
+        "description": "negative operator",
         "contents": [
             {
-                "left": "<RETSTAT>",
-                "right": "return"
+                "left": "<UNOP>",
+                "right": "-"
             },
             {
-                "left": "<RETSTAT>",
-                "right": "return <EXPLIST>"
+                "left": "<UNOP>",
+                "right": "not"
             },
             {
-                "left": "<RETSTAT>",
-                "right": "return ;"
-            },
-            {
-                "left": "<RETSTAT>",
-                "right": "return <EXPLIST> ;"
+                "left": "<UNOP>",
+                "right": "~"
             }
         ]
     }
