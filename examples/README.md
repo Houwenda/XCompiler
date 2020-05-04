@@ -1,18 +1,38 @@
-## t2_grammar.json
+# 文法文件
+
+位于examples目录下。
+
+```
+test0/
+    t2_calculator.json 四则运算测试
+    t2_ppt1.json PPT示例1
+    t2_ppt2.json PPT示例2
+
+test1/
+    t2_grammar.json 类似编译型语言文法
+
+test2/
+    t2_lua.json 类似于脚本语言文法（基于Lua改）
+
+/
+    t3_grammar.json 词法分析文法（基于Lua改）
+    t2_debug.json 用于触发bug，根据test_debug.txt最小化文法
+
+```
+
+## test1/t2_grammar.json
 
 2型文法，用于语法分析。
 
 
-### 表示
-
-表示规则：
+### 表示规则
 - <大写单词>表示中间状态
 - <小写单词>表示此法分析类型或别名
 - 其他为单词/符号
 - 各项由空格隔开
 - 入口标识为`<CODE>`
 
-文法设计：
+### 文法设计
 ```
 <代码入口> -> <函数定义>
 <函数定义> -> function <标识符> ( <参数声明> ) 函数块 end
@@ -81,7 +101,7 @@
 <函数返回> -> return <因式> 
 ```
 
-拓广文法（自动拓广，`<empty>`已做删除处理）：
+### 拓广文法（自动拓广，`<empty>`已做删除处理）
 ```
 (0) <S'> -> <CODE> 
 (1) <CODE> -> <FUNCTION_DEFINITION> 
@@ -151,7 +171,7 @@
 (65) <FUNCTION_RETURN> -> return <FACTOR_FORMULA> 
 ```
 
-中间状态对照表：
+### 中间状态对照表
 | 状态                            | 描述           |
 | ------------------------------- | -------------- |
 | `<CODE>`                        | 代码入口       |
@@ -182,12 +202,279 @@
 | `<LOGICAL_OPERATOR>`            | 逻辑运算符     |
 | `<ELSE_SENTENCE>`               | 分支转移       |
 
-类型或别名对照表：
+### 类型或别名对照表
 | 别名           | 描述   |
 | -------------- | ------ |
 | `<constant>`   | 常量   |
 | `<identifier>` | 标识符 |
 | `<empty>`      | 空     |
+
+## /test2/t2_lua.json
+
+2型文法，用于语法分析。
+
+### 表示规则
+- <大写单词>表示中间状态
+- <小写单词>表示此法分析类型或别名
+- 其他为单词/符号
+- 各项由空格隔开
+- 入口标识为`<CODE>`
+
+### 文法设计
+
+```
+<代码入口> -> <代码块> 
+<代码块> -> <声名语句> <代码块> 
+<代码块> -> <返回语句> 
+<代码块> -> 
+<声名语句> -> ; 
+<声名语句> -> <变量列表> = <表达式列表> 
+<声名语句> -> <函数调用> 
+<声名语句> -> break 
+<声名语句> -> while <表达式>> do <代码块> end 
+<声名语句> -> <分支语句> 
+<声名语句> -> <for循环> 
+<声名语句> -> function <函数名> <函数体> 
+<声名语句> -> local function <identifier> <函数体> 
+<声名语句> -> local <标识符列表> 
+<声名语句> -> local <标识符列表> = <表达式列表> 
+<标识符列表> -> <identifier> <标识符闭包> 
+<标识符闭包> -> , <identifier> 
+<标识符闭包> -> 
+<函数名> -> <identifier> <模块函数> 
+<函数名> -> <identifier> <模块函数> : <identifier> 
+<模块函数> -> . <identifier> <模块函数> 
+<模块函数> -> 
+<函数体> -> ( ) <代码块> end 
+<函数体> -> ( <参数列表> ) <代码块> end 
+<参数列表> -> <标识符列表> 
+<参数列表> -> <标识符列表> , ... 
+<参数列表> -> ... 
+<for循环> -> for <identifier> = <表达式> , <表达式> , <表达式> do <代码块> end 
+<for循环> -> for <identifier> = <表达式> , <表达式> do <代码块> end 
+<for循环> -> for <标识符列表> in <表达式列表> do <代码块> end 
+<分支语句> -> if <表达式> then <代码块> <否则如果语句> <否则语句> end 
+<否则如果语句> -> elseif <EXP> then <代码块> <否则如果语句> 
+<否则如果语句> -> 
+<否则语句> -> else <代码块> 
+<否则语句> -> 
+<函数调用> -> <前缀表达式> <参数> 
+<函数调用> -> <前缀表达式> : <identifier> <参数> 
+<参数> -> ( ) 
+<参数> -> ( <表达式列表> ) 
+<参数> -> <表构造器> 
+<表构造器> -> { } 
+<表构造器> -> { <域值列表> } 
+<域值列表> -> <域值>> <域值闭包> 
+<域值列表> -> <域值> <域值闭包> <域值分隔符> 
+<域值闭包> -> <域值分隔符> <域值> <域值闭包> 
+<域值闭包> -> 
+<域值> -> [ <表达式> ] = <表达式> 
+<域值> -> <identifier> = <表达式>> 
+<域值> -> <表达式> 
+<域值分隔符> -> , 
+<域值分隔符> -> ; 
+<变量列表> -> <变量> <变量闭包> 
+<变量闭包> -> , <变量> 
+<变量闭包> -> 
+<表达式列表> -> <表达式> <表达式闭包> 
+<表达式闭包> -> , <表达式> 
+<表达式闭包> -> 
+<表达式> -> nil 
+<表达式> -> true 
+<表达式> -> false 
+<表达式> -> <constant> 
+<表达式> -> ... 
+<表达式> -> <表达式> <双目运算符> <表达式> 
+<表达式> -> <单目运算符> <表达式> 
+<表达式> -> <前缀表达式> 
+<表达式> -> <表构造器> 
+<表达式> -> <函数定义> 
+<函数定义> -> function <函数体> 
+<单目运算符> -> - 
+<单目运算符> -> not 
+<单目运算符> -> ~ 
+<前缀表达式> -> <变量> 
+<前缀表达式> -> <函数调用> 
+<前缀表达式> -> ( <表达式> ) 
+<变量> -> <identifier> 
+<变量> -> <前缀表达式> [ <表达式> ] 
+<变量> -> <前缀表达式> . <identifier> 
+<双目运算符> -> + 
+<双目运算符> -> - 
+<双目运算符> -> * 
+<双目运算符> -> / 
+<双目运算符> -> // 
+<双目运算符> -> % 
+<双目运算符> -> ^ 
+<双目运算符> -> & 
+<双目运算符> -> | 
+<双目运算符> -> ~ 
+<双目运算符> -> >> 
+<双目运算符> -> << 
+<双目运算符> -> .. 
+<双目运算符> -> < 
+<双目运算符> -> <= 
+<双目运算符> -> > 
+<双目运算符> -> >= 
+<双目运算符> -> == 
+<双目运算符> -> ~= 
+<双目运算符> -> and 
+<双目运算符> -> or 
+<返回语句> -> return 
+<返回语句> -> return <表达式列表> 
+<返回语句> -> return ; 
+<返回语句> -> return <表达式列表> ; 
+```
+
+### 拓广文法（自动拓广）
+```
+(0) <S'> -> <CODE> 
+(1) <CODE> -> <BLOCK> 
+(2) <BLOCK> -> <STAT> <BLOCK> 
+(3) <BLOCK> -> <RETSTAT> 
+(4) <BLOCK> -> 
+(5) <STAT> -> ; 
+(6) <STAT> -> <VARLIST> = <EXPLIST> 
+(7) <STAT> -> <FUNCTIONCALL> 
+(8) <STAT> -> break 
+(9) <STAT> -> while <EXP> do <BLOCK> end 
+(10) <STAT> -> <BRANCH> 
+(11) <STAT> -> <FOR_LOOP> 
+(12) <STAT> -> function <FUNCNAME> <FUNCBODY> 
+(13) <STAT> -> local function <identifier> <FUNCBODY> 
+(14) <STAT> -> local <IDENTIFIER_LIST> 
+(15) <STAT> -> local <IDENTIFIER_LIST> = <EXPLIST> 
+(16) <IDENTIFIER_LIST> -> <identifier> <IDENTIFIER_CLOSURE> 
+(17) <IDENTIFIER_CLOSURE> -> , <identifier> 
+(18) <IDENTIFIER_CLOSURE> -> 
+(19) <FUNCNAME> -> <identifier> <MODULE_FUNCTION> 
+(20) <FUNCNAME> -> <identifier> <MODULE_FUNCTION> : <identifier> 
+(21) <MODULE_FUNCTION> -> . <identifier> <MODULE_FUNCTION> 
+(22) <MODULE_FUNCTION> -> 
+(23) <FUNCBODY> -> ( ) <BLOCK> end 
+(24) <FUNCBODY> -> ( <PARLIST> ) <BLOCK> end 
+(25) <PARLIST> -> <IDENTIFIER_LIST> 
+(26) <PARLIST> -> <IDENTIFIER_LIST> , ... 
+(27) <PARLIST> -> ... 
+(28) <FOR_LOOP> -> for <identifier> = <EXP> , <EXP> , <EXP> do <BLOCK> end 
+(29) <FOR_LOOP> -> for <identifier> = <EXP> , <EXP> do <BLOCK> end 
+(30) <FOR_LOOP> -> for <IDENTIFIER_LIST> in <EXPLIST> do <BLOCK> end 
+(31) <BRANCH> -> if <EXP> then <BLOCK> <ELSE_IF> <ELSE> end 
+(32) <ELSE_IF> -> elseif <EXP> then <BLOCK> <ELSE_IF> 
+(33) <ELSE_IF> -> 
+(34) <ELSE> -> else <BLOCK> 
+(35) <ELSE> -> 
+(36) <FUNCTIONCALL> -> <PREFIXEXP> <ARGS> 
+(37) <FUNCTIONCALL> -> <PREFIXEXP> : <identifier> <ARGS> 
+(38) <ARGS> -> ( ) 
+(39) <ARGS> -> ( <EXPLIST> ) 
+(40) <ARGS> -> <TABLECONSTRUCTOR> 
+(41) <TABLECONSTRUCTOR> -> { } 
+(42) <TABLECONSTRUCTOR> -> { <FIELDLIST> } 
+(43) <FIELDLIST> -> <FIELD> <FIELD_CLOSURE> 
+(44) <FIELDLIST> -> <FIELD> <FIELD_CLOSURE> <FIELDSEP> 
+(45) <FIELD_CLOSURE> -> <FIELDSEP> <FIELD> <FIELD_CLOSURE> 
+(46) <FIELD_CLOSURE> -> 
+(47) <FIELD> -> [ <EXP> ] = <EXP> 
+(48) <FIELD> -> <identifier> = <EXP> 
+(49) <FIELD> -> <EXP> 
+(50) <FIELDSEP> -> , 
+(51) <FIELDSEP> -> ; 
+(52) <VARLIST> -> <VAR> <VAR_CLOSURE> 
+(53) <VAR_CLOSURE> -> , <VAR> 
+(54) <VAR_CLOSURE> -> 
+(55) <EXPLIST> -> <EXP> <EXP_CLOSURE> 
+(56) <EXP_CLOSURE> -> , <EXP> 
+(57) <EXP_CLOSURE> -> 
+(58) <EXP> -> nil 
+(59) <EXP> -> true 
+(60) <EXP> -> false 
+(61) <EXP> -> <constant> 
+(62) <EXP> -> ... 
+(63) <EXP> -> <EXP> <BINOP> <EXP> 
+(64) <EXP> -> <UNOP> <EXP> 
+(65) <EXP> -> <PREFIXEXP> 
+(66) <EXP> -> <TABLECONSTRUCTOR> 
+(67) <EXP> -> <FUNCTIONDEF> 
+(68) <FUNCTIONDEF> -> function <FUNCBODY> 
+(69) <UNOP> -> - 
+(70) <UNOP> -> not 
+(71) <UNOP> -> ~ 
+(72) <PREFIXEXP> -> <VAR> 
+(73) <PREFIXEXP> -> <FUNCTIONCALL> 
+(74) <PREFIXEXP> -> ( <EXP> ) 
+(75) <VAR> -> <identifier> 
+(76) <VAR> -> <PREFIXEXP> [ <EXP> ] 
+(77) <VAR> -> <PREFIXEXP> . <identifier> 
+(78) <BINOP> -> + 
+(79) <BINOP> -> - 
+(80) <BINOP> -> * 
+(81) <BINOP> -> / 
+(82) <BINOP> -> // 
+(83) <BINOP> -> % 
+(84) <BINOP> -> ^ 
+(85) <BINOP> -> & 
+(86) <BINOP> -> | 
+(87) <BINOP> -> ~ 
+(88) <BINOP> -> >> 
+(89) <BINOP> -> << 
+(90) <BINOP> -> .. 
+(91) <BINOP> -> < 
+(92) <BINOP> -> <= 
+(93) <BINOP> -> > 
+(94) <BINOP> -> >= 
+(95) <BINOP> -> == 
+(96) <BINOP> -> ~= 
+(97) <BINOP> -> and 
+(98) <BINOP> -> or 
+(99) <RETSTAT> -> return 
+(100) <RETSTAT> -> return <EXPLIST> 
+(101) <RETSTAT> -> return ; 
+(102) <RETSTAT> -> return <EXPLIST> ; 
+```
+
+### 中间状态对照表
+| 状态                   | 描述         |
+| ---------------------- | ------------ |
+| `<CODE>`               | 代码入口     |
+| `<BLOCK> `             | 代码块       |
+| `<STAT>`               | 声明语句     |
+| `<RETSTAT> `           | 返回语句     |
+| `VARLIST`              | 变量列表     |
+| `<VAR>`                | 变量         |
+| `<VAR_CLOSURE>`        | 变量闭包     |
+| `<EXPLIST>`            | 表达式列表   |
+| `<EXP>`                | 表达式       |
+| `<PREFIXEXP>`          | 前缀表达式   |
+| `<EXP_CLOSURE>`        | 表达式闭包   |
+| `<FUNCTIONCALL>`       | 函数调用     |
+| `<ARGS>`               | 参数         |
+| `<FUNCTIONDEF>`        | 函数定义     |
+| `<FUNCNAME>`           | 函数名       |
+| `<MODULE_FUNCTION>`    | 模块函数     |
+| `<PARLIST>`            | 参数列表     |
+| `<FUNCBODY>`           | 函数体       |
+| `<BRANCH>`             | 分支语句     |
+| `<ELSE_IF>`            | 否则如果语句 |
+| `<ELSE>`               | 否则语句     |
+| `<FOR_LOOP>`           | for循环      |
+| `<IDENTIFIER_LIST>`    | 标识符列表   |
+| `<IDENTIFIER_CLOSURE>` | 标识符闭包   |
+| `<TABLECONSTRUCTOR>`   | 表构造器     |
+| `<FIELDLIST>`          | 域值列表     |
+| `<FIELD>`              | 域值         |
+| `<FIELD_CLOSURE>`      | 域值闭包     |
+| `<FIELDSEP>`           | 域值分隔符   |
+| `<BINOP>`              | 双目运算符   |
+| `<UNOP>`               | 单目运算符   |
+
+
+### 类型或别名对照表
+| 别名           | 描述   |
+| -------------- | ------ |
+| `<constant>`   | 常量   |
+| `<identifier>` | 标识符 |
 
 ## t3_grammar.json
 
@@ -420,9 +707,37 @@ DFA中没有正则里的贪婪和懒惰匹配模式问题，因此这里的<dot1
 | `<dot2>`   | 除LF、LR、单引号外其他字符 |
 
 
+# 代码文件
 
-## code.txt
+包含以下文件，位于examples中。
+
+```
+test1/
+    code1.txt 类似于编译型语言，支持的语法类型较少
+
+test2/
+    code_unit.txt 单元测试，类似于脚本语言
+    code_complete.txt 完整测试，类似于脚本语言
+
+/
+    code_debug.txt 用于触发bug
+```
+
+
+## test1/code.txt
 
 示例代码，作为词法分析器的输入。
 
-测试用例使用类似Lua和C++语法。
+测试用例使用的语法类似于C++等编译型语言。
+
+## test2/code_unit.txt
+
+代码单元测试，测试各种支持的语法。
+
+语法类似于Lua等脚本语言。
+
+## test2/code_complete.txt
+
+代码完整测试，测试各种语法的混合使用。
+
+语法类似与Lua等脚本语言。

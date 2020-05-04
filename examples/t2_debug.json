@@ -36,10 +36,6 @@
             {
                 "left": "<FUNCTIONCALL>",
                 "right": "<PREFIXEXP> <ARGS>"
-            },
-            {
-                "left": "<FUNCTIONCALL>",
-                "right": "<PREFIXEXP> : <identifier> <ARGS>"
             }
         ]
     },
@@ -65,10 +61,6 @@
         "contents": [
             {
                 "left": "<ARGS>",
-                "right": "( )"
-            },
-            {
-                "left": "<ARGS>",
                 "right": "( <EXPLIST> )"
             }
         ]
@@ -79,14 +71,6 @@
             {
                 "left": "<VAR>",
                 "right": "<identifier>"
-            },
-            {
-                "left": "<VAR>",
-                "right": "<PREFIXEXP> [ <EXP> ]"
-            },
-            {
-                "left": "<VAR>",
-                "right": "<PREFIXEXP> . <identifier>"
             }
         ]
     },
@@ -110,18 +94,6 @@
     {
         "description": "expression",
         "contents": [
-            {
-                "left": "<EXP>",
-                "right": "nil"
-            },
-            {
-                "left": "<EXP>",
-                "right": "true"
-            },
-            {
-                "left": "<EXP>",
-                "right": "false"
-            },
             {
                 "left": "<EXP>",
                 "right": "<constant>"

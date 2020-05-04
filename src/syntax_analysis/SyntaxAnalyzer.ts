@@ -150,7 +150,6 @@ class SyntaxAnalyzer {
         }
     }
 
-
     // create FIRST set of productions
     createFIRST(): void {
         for (var production of this.promotedProductions) {
@@ -203,46 +202,27 @@ class SyntaxAnalyzer {
                         searchSymbol.add(tmp);
                     }
                 }
-                // if (dotPosition < productionRight.length - 1) {  // has more than 1 token behind dot, e.g. S->.Sa, S->.SA
-                //     if (tokenType(productionRight[dotPosition + 1]) == "state") {  // not final
-                //         var searchIndex: number = 1;
-                //         while (searchSymbol.size == 0 && dotPosition + searchIndex < productionRight.length) {
-                //             searchSymbol = this.firstVT(productionRight[dotPosition + searchIndex], []);
-                //             searchIndex++;
-                //         }
-                //         if (searchSymbol.size == 0) {  // all tokens lead to empty, add front-search symbol
-                //             searchSymbol = new Set(dfaNode.searchSymbol[analyzedProductionCount]);
-                //         }
-                //     } else {  // common or alias, final
-                //         searchSymbol.add(productionRight[dotPosition + 1]);
-                //     }
-                // } else {  // has only 1 token behind dot, e.g. S->S.a, S->S.A
-                //     searchSymbol = new Set(dfaNode.searchSymbol[analyzedProductionCount]);  // add front-search symbol
-                // }
 
-                // if(dfaNode.index == 9) {  // debug
-                //     console.log("!!! creating search symbol for dfa 9:", this.promotedProductions[productionIndex], dotPosition, searchSymbol);
-                // }
-
+                var recalculateStart: number = -1;  // has to recalculate from the first changed production during combination
                 // handle closure productions and positions
                 for (var i: number = 0; i < this.promotedProductions.length; i++) {
                     if (//dfaNode.productionIndex.indexOf(i) == -1 &&  // remove deuplicated index
                         this.promotedProductions[i]["left"] == productionRight[dotPosition]) {  // left side match
                         // combine multiple search symbols into former newNode production, e.g. S->a.B,a S->a.B,b => S->a.B, a/b
-                        var canCombine: boolean = false;
+                        var canCombine: boolean = false;  // duplicate production and dot at 0, may be able to combine
                         for (var k: number = 0; k < dfaNode.productionIndex.length; k++) {
                             if (dfaNode.productionIndex[k] == i && dfaNode.position[k] == 0) {  // same production, same position
                                 canCombine = true;
                                 for (var tmpSymbol of searchSymbol) {
                                     if (dfaNode.searchSymbol[k].indexOf(tmpSymbol) == -1) {  // remove duplicate
                                         dfaNode.searchSymbol[k].push(tmpSymbol);
+                                        // this production has been changed, redo closure from this index
+                                        if (recalculateStart == -1 &&
+                                            k < analyzedProductionCount) {  // can only go back, not skipping
+                                            recalculateStart = k - 1;
+                                        }
                                     }
                                 }
-
-                                // if(dfaNode.index == 9) {  //debug
-                                //     console.log("!!! combine searchSymbol:", dfaNode.searchSymbol[k]);
-                                // }
-
                                 break;
                             }
                         }
@@ -255,31 +235,14 @@ class SyntaxAnalyzer {
                             }
                             dfaNode.searchSymbol.push(searchSymbolArray);
 
-                            // if(dfaNode.index == 9) {  //debug
-                            //     console.log("!!! create new production:", this.promotedProductions[i], searchSymbolArray);
-                            // }
                         }
 
                     }
                 }
-            }
-
-            if (dfaNode.index == 9) {  // debug
-                console.log("!!!", dfaNode.productionIndex[analyzedProductionCount]);
-                for (var j in dfaNode.productionIndex) {
-                    var tmpProduction = this.promotedProductions[dfaNode.productionIndex[j]];
-                    var rightString: string = "";
-                    for (var tmpNum:number = 0; tmpNum < tmpProduction["right"].length; tmpNum++) {
-                        if (tmpNum == dfaNode.position[j]) {
-                            rightString += "<DOT> "
-                        }
-                        rightString += tmpProduction["right"][tmpNum] + " ";
-                    }
-                    console.log("production: (" + dfaNode.productionIndex[j] + ") " + tmpProduction["left"] + " -> " + rightString + ",", dfaNode.searchSymbol[j])
+                if (recalculateStart != -1) {  // combination has happened, production changed
+                    analyzedProductionCount = recalculateStart;
                 }
             }
-            
-
 
             analyzedProductionCount++;
         }
@@ -485,38 +448,39 @@ class SyntaxAnalyzer {
 
         console.log("production -> DFA");
         this.createDFA();
+        console.log("DFA created with", this.DFA.length, " nodes");
         //console.log(this.DFA)//
-        for (var i in this.DFA) {
-            console.log("DFA index:", this.DFA[i].index);
-            for (var j in this.DFA[i].productionIndex) {
-                var tmpProduction = this.promotedProductions[this.DFA[i].productionIndex[j]];
-                var rightString: string = "";
-                for (var k in tmpProduction["right"]) {
-                    if (k == this.DFA[i].position[j]) {
-                        rightString += "<DOT> "
-                    }
-                    rightString += tmpProduction["right"][k] + " ";
-                }
-                console.log("production: (" + this.DFA[i].productionIndex[j] + ") " + tmpProduction["left"] + " -> " + rightString + ",", this.DFA[i].searchSymbol[j])
+        // for (var i in this.DFA) {
+        //     console.log("DFA index:", this.DFA[i].index);
+        //     for (var j in this.DFA[i].productionIndex) {
+        //         var tmpProduction = this.promotedProductions[this.DFA[i].productionIndex[j]];
+        //         var rightString: string = "";
+        //         for (var k in tmpProduction["right"]) {
+        //             if (k == this.DFA[i].position[j]) {
+        //                 rightString += "<DOT> "
+        //             }
+        //             rightString += tmpProduction["right"][k] + " ";
+        //         }
+        //         console.log("production: (" + this.DFA[i].productionIndex[j] + ") " + tmpProduction["left"] + " -> " + rightString + ",", this.DFA[i].searchSymbol[j])
 
-                // console.log("   production index:", this.DFA[i].productionIndex[j]);
-                // console.log("   position", this.DFA[i].position[j]);
-                // console.log("   search symbol:", this.DFA[i].searchSymbol[j]);
-            }
-            console.log("next states:", this.DFA[i].nextState);
-            console.log();
-        }
+        //         // console.log("   production index:", this.DFA[i].productionIndex[j]);
+        //         // console.log("   position", this.DFA[i].position[j]);
+        //         // console.log("   search symbol:", this.DFA[i].searchSymbol[j]);
+        //     }
+        //     console.log("next states:", this.DFA[i].nextState);
+        //     console.log();
+        // }
 
         console.log("DFA -> ACTION & GOTO table");
         this.createTables();
         console.log("ACTION table(" + this.ACTION.length + ")");
-        for (var tmp of this.ACTION) {
-            console.log("(" + tmp.index + ", " + tmp.character + ") : " + tmp["content-type"] + tmp.content);
-        }
+        // for (var tmp of this.ACTION) {
+        //     console.log("(" + tmp.index + ", " + tmp.character + ") : " + tmp["content-type"] + tmp.content);
+        // }
         console.log("GOTO table(" + this.GOTO.length + ")");
-        for (var tmp of this.GOTO) {
-            console.log("(" + tmp.index + ", " + tmp.state + ") : " + tmp.content);
-        }
+        // for (var tmp of this.GOTO) {
+        //     console.log("(" + tmp.index + ", " + tmp.state + ") : " + tmp.content);
+        // }
 
     }
 }
