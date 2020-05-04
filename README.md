@@ -69,7 +69,7 @@ node index.js -s --pl ../../examples/t3_grammar.json --ps ../../examples/test2/t
 node index.js -s --pl ../../examples/t3_grammar.json --ps ../../examples/test2/t2_lua.json -c ../../examples/test2/code_complete.txt > debug.txt
 ```
 
+debug
 ```shell
-# debug
-node index.js -s --pl ../../examples/t3_grammar.json --ps ../../examples/t2_grammar.json -c ../../examples/code1.txt  > debug.txt
+node index.js -s --pl ../../examples/t3_grammar.json --ps ../../examples/t2_debug.json -c ../../examples/code_debug.txt  > debug.txt
 ```
