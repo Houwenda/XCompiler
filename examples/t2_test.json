@@ -1,0 +1,135 @@
+[
+    {
+        "description": "code starts",
+        "contents": [
+            {
+                "left": "<CODE>",
+                "right": "<BLOCK>"
+            }
+        ]
+    },
+    {
+        "description": "code blocks",
+        "contents": [
+            {
+                "left": "<BLOCK>",
+                "right": "<STAT> <BLOCK>"
+            },
+            {
+                "left": "<BLOCK>",
+                "right": "<empty>"
+            }
+        ]
+    },
+    {
+        "description": "code states",
+        "contents": [
+            {
+                "left": "<STAT>",
+                "right": "<FUNCTIONCALL>"
+            }
+        ]
+    },
+    {
+        "description": "function call",
+        "contents": [
+            {
+                "left": "<FUNCTIONCALL>",
+                "right": "<PREFIXEXP> <ARGS>"
+            },
+            {
+                "left": "<FUNCTIONCALL>",
+                "right": "<PREFIXEXP> : <identifier> <ARGS>"
+            }
+        ]
+    },
+    {
+        "description": "prefix expression",
+        "contents": [
+            {
+                "left": "<PREFIXEXP>",
+                "right": "<VAR>"
+            },
+            {
+                "left": "<PREFIXEXP>",
+                "right": "<FUNCTIONCALL>"
+            },
+            {
+                "left": "<PREFIXEXP>",
+                "right": "( <EXP> )"
+            }
+        ]
+    },
+    {
+        "description": "arguments",
+        "contents": [
+            {
+                "left": "<ARGS>",
+                "right": "( )"
+            },
+            {
+                "left": "<ARGS>",
+                "right": "( <EXPLIST> )"
+            }
+        ]
+    },
+    {
+        "description": "variable",
+        "contents": [
+            {
+                "left": "<VAR>",
+                "right": "<identifier>"
+            },
+            {
+                "left": "<VAR>",
+                "right": "<PREFIXEXP> [ <EXP> ]"
+            },
+            {
+                "left": "<VAR>",
+                "right": "<PREFIXEXP> . <identifier>"
+            }
+        ]
+    },
+    {
+        "description": "expression list",
+        "contents": [
+            {
+                "left": "<EXPLIST>",
+                "right": "<EXP> <EXP_CLOSURE>"
+            },
+            {
+                "left": "<EXP_CLOSURE>",
+                "right": ", <EXP>"
+            },
+            {
+                "left": "<EXP_CLOSURE>",
+                "right": "<empty>"
+            }
+        ]
+    },
+    {
+        "description": "expression",
+        "contents": [
+            {
+                "left": "<EXP>",
+                "right": "nil"
+            },
+            {
+                "left": "<EXP>",
+                "right": "true"
+            },
+            {
+                "left": "<EXP>",
+                "right": "false"
+            },
+            {
+                "left": "<EXP>",
+                "right": "<constant>"
+            },            
+            {
+                "left": "<EXP>",
+                "right": "<PREFIXEXP>"
+            }
+        ]
+    }
+]

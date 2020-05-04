@@ -58,10 +58,15 @@ example
 ```shell
 tsc --build src/tsconfig.json
 cd src/build
-node index.js -s --pl ../../examples/t3_grammar.json --ps ../../examples/t2_grammar.json -c ../../examples/code.txt > debug.txt
+
+# test1
+node index.js -s --pl ../../examples/t3_grammar.json --ps ../../examples/test1/t2_grammar.json -c ../../examples/test1/code1.txt > debug.txt
+
+# test2
+node index.js -s --pl ../../examples/t3_grammar.json --ps ../../examples/test2/t2_lua.json -c ../../examples/test2/code_pass.txt > debug.txt
 ```
 
-```
-测试
+```shell
+# debug
 node index.js -s --pl ../../examples/t3_grammar.json --ps ../../examples/t2_grammar.json -c ../../examples/code1.txt  > debug.txt
 ```
