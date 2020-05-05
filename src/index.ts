@@ -45,7 +45,7 @@ if (args.l != null && args.s == null) {  // lexical analysis
         var syntaxAnalyzer = new SA();
         syntaxAnalyzer.analyze(args.ps);
         console.log("code parsing starts");
-        var syntaxCodeParser = new CP1(syntaxAnalyzer.ACTION, syntaxAnalyzer.GOTO, syntaxAnalyzer.promotedProductions);
+        var syntaxCodeParser = new CP1(syntaxAnalyzer.ACTION, syntaxAnalyzer.GOTO, syntaxAnalyzer.DFA, syntaxAnalyzer.promotedProductions);
         syntaxCodeParser.parse(codeParser.TokenStream);
     }
 } else {
