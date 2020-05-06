@@ -390,7 +390,7 @@
             {
                 "description": "~=",
                 "production": [
-                    "A-><!>B",
+                    "A-><~>B",
                     "B-><=>"
                 ]
             },
@@ -477,6 +477,12 @@
                 "description": ";",
                 "production": [
                     "A-><;>"
+                ]
+            },
+            {
+                "description": ":",
+                "production": [
+                    "A-><:>"
                 ]
             }
         ]
