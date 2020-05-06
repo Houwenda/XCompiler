@@ -73,7 +73,7 @@ function getCharset(typeNFA: Array<NFANode>): Set<string> {
 function removeHeadSpace(code: string): string {
     var i: number;
     for (i = 0; i < code.length; i++) {
-        if (code[i] != " ") {
+        if (code[i] != " " && code[i] != "\r") {
             break;
         }
     }
