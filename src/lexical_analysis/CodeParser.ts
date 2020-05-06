@@ -84,7 +84,7 @@ class CodeParser {
         //this.restCode = this.codeString.trim();
         // handle head spaces and LFs
         this.restCode = this.codeString;
-        while (this.restCode[0] == " " || this.restCode[0] == "\n") {
+        while (this.restCode[0] == " " || this.restCode[0] == "\n" || this.restCode[0] == "\r") {
             if (this.restCode[0] == "\n") {
                 this.lineCount++;
                 this.restCode = this.restCode.substr(1);
@@ -93,6 +93,7 @@ class CodeParser {
             }
         }
 
+        var haveSpaceBetween: boolean = false;  // handles tokens such as 5num, truenum
         while (this.restCode.length > 0) {
             // should match in order: 
             // keyword -> constant -> identifier -> operator -> delimiter
@@ -105,6 +106,16 @@ class CodeParser {
             } else if (this.matchType("identifier")) {
                 var tokenLength: number = this.TokenStream[this.TokenStream.length - 1].token.length;
                 this.restCode = this.restCode.substr(tokenLength);
+                // there must be space between constant and identifier, e.g. 5num should cause error, not paring as 5 num
+                // console.log(this.TokenStream, haveSpaceBetween);
+                if (this.TokenStream.length > 1 &&
+                    this.TokenStream[this.TokenStream.length - 2]["type"] == "constant" &&
+                    haveSpaceBetween == false) {
+                    console.log("error matching on line " + this.TokenStream[this.TokenStream.length - 1]["line"] + " :", 
+                    this.TokenStream[this.TokenStream.length - 2]["token"] + this.TokenStream[this.TokenStream.length - 1]["token"]);
+                    this.TokenStream = [];
+                    break;
+                }
             } else if (this.matchType("operator")) {
                 var tokenLength: number = this.TokenStream[this.TokenStream.length - 1].token.length;
                 this.restCode = this.restCode.substr(tokenLength);
@@ -112,12 +123,19 @@ class CodeParser {
                 var tokenLength: number = this.TokenStream[this.TokenStream.length - 1].token.length;
                 this.restCode = this.restCode.substr(tokenLength);
             } else {  // can not match any type
-                console.log("error matching:", this.restCode.substr(0, 40));
+                console.log("error matching on line " + this.TokenStream[this.TokenStream.length - 1]["line"] + " :", this.restCode.substr(0, 40));
+                this.TokenStream = [];
                 break;
             }
 
-            //this.restCode = rmHeadSpace(this.restCode);
-            while (this.restCode[0] == " " || this.restCode[0] == "\n") {
+            // tokens split by " " "\r" "\n"
+            if (this.restCode[0] != " " && this.restCode[0] != "\n" && this.restCode[0] != "\r") {
+                haveSpaceBetween = false;
+            } else {
+                haveSpaceBetween = true;
+            }
+
+            while (this.restCode[0] == " " || this.restCode[0] == "\n" || this.restCode[0] == "\r") {
                 if (this.restCode[0] == "\n") {
                     this.lineCount++;
                     this.restCode = this.restCode.substr(1);

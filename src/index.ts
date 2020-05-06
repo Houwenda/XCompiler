@@ -34,19 +34,22 @@ if (args.l != null && args.s == null) {  // lexical analysis
         var codeParser = new CP(lexicalAnalyzer.DFA);
         codeParser.parse(args.c);
         // output
-        for(var i in codeParser.TokenStream) {
+        for (var i in codeParser.TokenStream) {
             console.log(codeParser.TokenStream[i]);
         }
 
-        // syntax analysis
-        console.log("########## syntax analysis ##########")
-        var SA = require("./syntax_analysis/SyntaxAnalyzer").SyntaxAnalyzer;
-        var CP1 = require("./syntax_analysis/CodeParser").CodeParser;
-        var syntaxAnalyzer = new SA();
-        syntaxAnalyzer.analyze(args.ps);
-        console.log("code parsing starts");
-        var syntaxCodeParser = new CP1(syntaxAnalyzer.ACTION, syntaxAnalyzer.GOTO, syntaxAnalyzer.DFA, syntaxAnalyzer.promotedProductions);
-        syntaxCodeParser.parse(codeParser.TokenStream);
+        if (codeParser.TokenStream.length != 0) {  // no error during lexical analysis
+            // syntax analysis
+            console.log("########## syntax analysis ##########")
+            var SA = require("./syntax_analysis/SyntaxAnalyzer").SyntaxAnalyzer;
+            var CP1 = require("./syntax_analysis/CodeParser").CodeParser;
+            var syntaxAnalyzer = new SA();
+            syntaxAnalyzer.analyze(args.ps);
+            console.log("code parsing starts");
+            var syntaxCodeParser = new CP1(syntaxAnalyzer.ACTION, syntaxAnalyzer.GOTO, syntaxAnalyzer.DFA, syntaxAnalyzer.promotedProductions);
+            syntaxCodeParser.parse(codeParser.TokenStream);
+        }
+
     }
 } else {
     console.log("wrong args.\n  -l for lexical analysis.\n  -s for syntax analysis.");

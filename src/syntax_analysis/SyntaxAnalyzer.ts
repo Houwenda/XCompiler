@@ -56,45 +56,7 @@ class SyntaxAnalyzer {
         //console.log(this.promotedProductions)
     }
 
-    // get FIRST set of given state
-    firstVT(stateName: string, searchState: Array<string>): Set<string> {
-        //console.log("creating FIRST of", stateName)//
-        // already calculated
-        if (this.FIRST[stateName] != null) {
-            return this.FIRST[stateName];
-        }
-
-        if (tokenType(stateName) != "state") {  // not state, but common tokens
-            return new Set(stateName);
-        }
-
-        // not calculated yet
-        var result: Set<string> = new Set();
-        for (var i: number = 0; i < this.promotedProductions.length; i++) {
-            if (this.promotedProductions[i]["left"] == stateName) {  // left match
-                if (tokenType(this.promotedProductions[i]["right"][0]) == "state" &&  // not final
-                    this.promotedProductions[i]["right"][0] != stateName &&  // handle self looping, e.g. <FUNCTION_BLOCK_CLOSURE>-><FUNCTION_BLOCK_CLOSURE>
-                    searchState.indexOf(this.promotedProductions[i]["right"][0]) == -1) {  // handle closed loop
-                    // search recursively
-                    searchState.push(this.promotedProductions[i]["right"][0]);
-                    var tmpResult: Set<string> = this.firstVT(this.promotedProductions[i]["right"][0], searchState);
-                    for (var tmp of tmpResult) {
-                        result.add(tmp);
-                    }
-                } else {  // common or alias, final
-                    if (this.promotedProductions[i]["right"].length > 0) {  // <empty> removed, right side can be empty
-                        result.add(this.promotedProductions[i]["right"][0]);
-                    } else {
-                        result.add("<HASH>");  // if right side is empty, <empty> belongs to FIRST set
-                    }
-
-                }
-            }
-        }
-        return result;
-    }
-
-    createFIRST1(): void {
+    createFIRST(): void {
         for (var production of this.promotedProductions) {  // initialize
             this.FIRST[production["left"]] = [];
         }
@@ -145,17 +107,6 @@ class SyntaxAnalyzer {
                         this.FIRST[production["left"]].push("<HASH>");
                         canExpand = true;
                     }
-                }
-            }
-        }
-    }
-
-    // create FIRST set of productions
-    createFIRST(): void {
-        for (var production of this.promotedProductions) {
-            for (var tmp of production["right"]) {
-                if (tokenType(tmp) == "state" && this.FIRST.indexOf(tmp) == -1) {  // not final, remove duplicated
-                    this.FIRST[tmp] = this.firstVT(tmp, []);
                 }
             }
         }
@@ -254,30 +205,32 @@ class SyntaxAnalyzer {
         while (this.analyzedDFANodeCount < this.DFA.length) {
             var dfaNodeIndex: number = this.analyzedDFANodeCount;
             var dfaNode: LR1DFANode = this.DFA[dfaNodeIndex];
+
+            // handle move-in token when first meeting it
+            // if appeared before, ignore it
+            // when it first appears, add all productions to new node
+            //
+            // e.g. A->Bc (handle all productions immediately), A->Bd (ignore), A->Be (ignore)
+            // use move-in token "B" to handle these three productions when looping through the node
+            var moveInTokens: Array<string> = [];
+            // get all move-in token of the DFA node, "" if unable to move
+            for (var j = 0; j < dfaNode.productionIndex.length; j++) {
+                var tmpProductionIndex: number = dfaNode.productionIndex[j];
+                var tmpProductionRight: Array<string> = this.promotedProductions[tmpProductionIndex]["right"];
+                var tmpDotPosition: number = dfaNode.position[j];
+                if (tmpDotPosition < tmpProductionRight.length) {
+                    moveInTokens.push(tmpProductionRight[tmpDotPosition]);
+                } else {
+                    moveInTokens.push("");
+                }
+            }
+
             for (var i: number = 0; i < dfaNode.productionIndex.length; i++) {
                 var productionIndex: number = dfaNode.productionIndex[i];
                 var productionRight: Array<string> = this.promotedProductions[productionIndex]["right"];
                 var dotPosition: number = dfaNode.position[i];
-                if (dotPosition < productionRight.length) {  // still has word behind dot
+                if (dotPosition < productionRight.length) {  // still has word behind dot                
                     // handle move-in token when first meeting it
-                    // if appeared before, ignore it
-                    // when it first appears, add all productions to new node
-                    //
-                    // e.g. A->Bc (handle all productions immediately), A->Bd (ignore), A->Be (ignore)
-                    // use move-in token "B" to handle these three productions when looping through the node
-                    var moveInTokens: Array<string> = [];
-                    // get all move-in token of the DFA node, "" if unable to move
-                    for (var j = 0; j < dfaNode.productionIndex.length; j++) {
-                        var tmpProductionIndex: number = dfaNode.productionIndex[j];
-                        var tmpProductionRight: Array<string> = this.promotedProductions[tmpProductionIndex]["right"];
-                        var tmpDotPosition: number = dfaNode.position[j];
-                        if (tmpDotPosition < tmpProductionRight.length) {
-                            moveInTokens.push(tmpProductionRight[tmpDotPosition]);
-                        } else {
-                            moveInTokens.push("");
-                        }
-                    }
-
                     if (moveInTokens.indexOf(productionRight[dotPosition]) == i) {  // move-in token first appears
                         // create new DFA node (& add to this.DFA)
                         var newNodeIndex: number = this.DFA.length;
@@ -442,8 +395,7 @@ class SyntaxAnalyzer {
         }
 
         console.log("create FIRST set");
-        //this.createFIRST();
-        this.createFIRST1();
+        this.createFIRST();
         console.log(this.FIRST)//
 
         console.log("production -> DFA");

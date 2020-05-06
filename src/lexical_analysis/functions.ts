@@ -36,7 +36,7 @@ function unalias(aliasName: string): Set<string> {
             break;
         case "dot2":
             for (var tmp = 0; tmp < 128; tmp++) {
-                if (tmp != 13 && tmp != 10 && tmp != 39) {  // \r \n "
+                if (tmp != 13 && tmp != 10 && tmp != 39) {  // \r \n '
                     result.add(String.fromCharCode(tmp));
                 }
             }
