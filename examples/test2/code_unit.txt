@@ -17,7 +17,7 @@ end
 for var=1, 1E+10 do
 end
 
-for var in 10 do
+for var in {1, 2, 10} do
 end
 
 if 1~=2 then
